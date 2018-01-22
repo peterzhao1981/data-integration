@@ -1,0 +1,124 @@
+buildscript {
+    ext {
+        springBootVersion = '1.4.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        // Spring Boot plugin
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'spring-boot'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    //archivesBaseName = 'data-platform'
+    group = 'com.mode'
+    //version = '3.0'
+
+    // Global settings
+    ext {
+        // dependencies library verions
+        jjwtVersion = '0.6.0'
+        ossVersion = '2.2.3'
+        braintreeVersion = '2.62.0'
+        springFoxVersion = '2.4.0'
+        jsonpathVersion = '2.2.0'
+        mybatisVersion = '3.3.0'
+        mybatisSpringVersion = '1.2.3'
+        druidVersion = '1.0.16'
+        elasticSearchVersion = '1.7.1'
+
+        sharedManifest = manifest {
+            attributes 'Implementation-Title': "${project.name}",
+                    'Implementation-Version': "${version}",
+                    'Implementation-Vendor': 'Shanghai Yedao Technology',
+                    'Built-By': 'Mode',
+                    'Built-Date': new Date().getDateTimeString(),
+                    'Built-With': "gradle-${project.getGradle().getGradleVersion()}, groovy-${GroovySystem.getVersion()}",
+                    'Created-By': 'Java ' + System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')'
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        mavenCentral()
+        jcenter()
+    }
+
+
+    // Settings for the compile task
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+        options.encoding = 'UTF-8'
+        options.debug = true
+        options.compilerArgs << "-Xlint:unchecked"
+        options.compilerArgs << "-Xlint:deprecation"
+    }
+
+    // Apply 'war' plugin for all war projects
+    configure([project(":product-crawler")]) {
+        apply plugin: 'war'
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = '2.9'
+    }
+}
+
+project(':product-crawler') {
+
+    war {
+        //classifier = 'logistics'
+        manifest = sharedManifest
+    }
+
+    dependencies {
+        // Spring Boot MVC
+        compile("org.springframework.boot:spring-boot-starter-web")
+        // Spring Boot JPA
+        compile("org.springframework.boot:spring-boot-starter-data-jpa")
+        // Spring Boot AOP - advice, etc
+        compile("org.springframework.boot:spring-boot-starter-aop")
+        // Spring Boot Cache to support the auto-configuration of caching technologies
+        compile("org.springframework.boot:spring-boot-starter-cache")
+        // DevTools will automatically restart whenever files on the classpath change.
+        // In Eclipse, saving a modified file will cause the classpath to be updated and trigger
+        // a restart.
+        // In IntelliJ IDEA, building the project (Build → Make Project) will have the same effect.
+        compile("org.springframework.boot:spring-boot-devtools")
+        // Alibaba druid
+        //compile("com.alibaba:druid:${druidVersion}")
+        // Runtime Java EE Container - Tomcat
+        compile("org.springframework.boot:spring-boot-starter-tomcat")
+
+        compile("org.apache.httpcomponents:httpclient:4.5.2")
+
+        compile("org.jsoup:jsoup:1.10.1")
+
+        compile 'com.google.apis:google-api-services-analytics:v3-rev142-1.23.0'
+        compile 'com.google.apis:google-api-services-analyticsreporting:v4-rev118-1.23.0'
+        compile 'com.google.apis:google-api-services-content:v2-rev107-1.23.0'
+        compile 'com.google.api-client:google-api-client:1.23.0'
+        compile 'com.google.api-client:google-api-client-xml:1.23.0'
+        compile 'commons-cli:commons-cli:1.4'
+        compile 'com.google.oauth-client:google-oauth-client-jetty:1.19.0'
+        compile 'com.google.apis:google-api-services-manufacturers:v1-rev19-1.22.0'
+
+        compile("org.apache.poi:poi:3.14")
+        compile("org.apache.poi:poi-ooxml:3.14")
+
+
+        // MySQL Java Driver
+        runtime("mysql:mysql-connector-java")
+
+    }
+}

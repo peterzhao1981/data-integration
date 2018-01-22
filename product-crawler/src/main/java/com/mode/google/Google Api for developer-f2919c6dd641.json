@@ -1,12 +1,1 @@
-{
-  "type": "service_account",
-  "project_id": "wise-sandbox-187312",
-  "private_key_id": "f2919c6dd6413fd8cead9f0dff1ac5fe1cfa40d9",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDL2uJViPp59Pdk\n81ec5SdvhlWLPcszFlP0guIqh/65QEy/32GlhZSwjkMDW+A5dWwemnp2SpB+KF0J\nQkxCQekY7s6tpsKGhoOUXCymevjpet3eq9zsinnpSWCGafVejLzOl3e105K304RG\nq0xLmUtvxD6UWAZZRpWhxsBM2Zi9/H8Vy2JzbeG2YUrp7sGvikY2KtTcJHLHSbXo\n444pM6n4QhhAqa9tc26wXKK96Z4GoAHzq2vJ+wnhF/TUqlzgmxK8qtEhShCqNnUE\n0Ib1WO8zmqI3dCLNCPWBcHdNw1Xssr3vp2Rs1VF7Ulj3JFCGq4ZeC4NvgQRHQFBl\nAv1xTDzfAgMBAAECgf9biyDxNJvkFMUEEGpRipZcOcXOBoWSOkNlp4hLVhWhB3A0\nucLum44Mf/2EP7QY3l1C6s1iZUEHtQTXfDMlF8LaZZ5Wv1r+DkJ+er6mBDCbvExI\nqIKDZ9Nq+WsGoqI0yYh2KfE/hJIFv9j/bRSktu1anB6Rzglal8Q3sJy+NNGnklru\nf2BE1Ilst81RC+Nf5jNIKBlGm1HC0FWLOo9av5Ah16kkf1Vfhe4uJVpB9msf/g+H\nl59OOVcxOEKXPB/VkHDh0E3YQTYVbVD9yRuk8A0FEqwdFHI/WfzC761AdFIg/M+y\nZYMzp72RsdGH/m98ZP9CIbU9mGae1F1hgUeIsmUCgYEA5mkcomszCw2J6C00TQkT\nxmzZe2vUS3Xc8LBt2/j+D4lqzpiQPptUV3rGO28eQ/4vX6H5T79H53yMRDIA25rq\nViApq2NpFmlUdCRwRDYeXzeLezLCCZxxuHOfzbvuEK1+HkMlT7DhSnxLZl2mCTeV\nJkoWe+H91EvwKb+JCHK/3kUCgYEA4n7CyqidxAUzjSQvbBcMeN+7u3vuj4C/jQKe\nZ31gWoyZkaJED46FtJq9CwX6PKHckIp7YpX2TIvlCmM1ZukHOjRN27tvdKkmfKW8\ny66Y2pepZ1o1sNPbUbNI4KaGUDIZm1LM/AUmmicVVGt9fwZStXh6M1iXmVyGDl4q\nSmI1gtMCgYEAlv5jKX0e4itpKKIXGDTOpMZIb71mTl1bANBd7j3qILxpJiKMxLp+\nNyXaKrDTILO+z+kRvNUZhfX05evu6/tFflNte0eWYn18PvByMgFVPgjke0P0LOA9\nFiePnf9+L6fCcoqGNQcxXOK/dsIAQSIPuBvtSBn9gdaR+Inwf3zTiBECgYAl2Zkj\n1NnIkDX1OD7UiWWELZ9pzWQohxN7tRxTnxgjCawAMmW9U8v0Soec9/rBdyss3HeS\nGg127UnxWnLqJ7cVevgn6ELP9BSCcBAE2cChhwbARssCKeVU2ekr4ahAbp7o3gVz\neEjjKfTejrgCKkRYHzIMspli/5tHe2UF2TOoEQKBgQCmy9KsP1I41IDhyRvWe8CU\nP31m73R0L+FTxT3kOpnDRSwQARe6QKphuSBDXI6hPDekX8x+0dOTWqI1hOWV3nkH\nFeI73h0tHr9x3PK0XWYjuD8kiA26l1Xy6hh6hulyKN/OXHOnyGgOM7DD5yu/aI+D\nd9fYNyC8jkp7zGs3VchMuQ==\n-----END PRIVATE KEY-----\n",
-  "client_email": "admin-288@wise-sandbox-187312.iam.gserviceaccount.com",
-  "client_id": "113156014791332670350",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://accounts.google.com/o/oauth2/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/admin-288%40wise-sandbox-187312.iam.gserviceaccount.com"
-}
+

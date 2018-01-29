@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.mode.entity.MaBangOrder;
 import com.mode.util.ExcelUtils;
+import com.mode.util.RawDataUtil;
 
 /**
  * Created by zhaoweiwei on 2018/1/9.
@@ -25,10 +26,23 @@ public class MaBangOrderService {
 
     public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/output/order.xls";
 
+    private List<String> excludeOrders = new ArrayList<>();
+
     public void load() throws Exception {
         List<MaBangOrder> maBangOrders = new ArrayList<>();
+        loadExculdeOrders();
         input(maBangOrders);
         output(maBangOrders);
+    }
+
+    private void loadExculdeOrders() {
+        RawDataUtil.processLine("mabang_exclude_order.txt", line -> {
+            if (StringUtils.isEmpty(line)) {
+                return;
+            }
+            excludeOrders.add(line);
+        });
+        System.out.println(excludeOrders.size());
     }
 
     private void input(List<MaBangOrder> maBangOrders) throws Exception {
@@ -82,6 +96,11 @@ public class MaBangOrderService {
                                         value = value.trim();
                                     }
                                     if (j == 0) {
+                                        if (excludeOrders.contains(value)) {
+                                            System.out.println(value);
+                                            orderNo = "";
+                                            continue;
+                                        }
                                         orderNo = value;
                                     } else if (j == 10) {
                                         if (!StringUtils.isEmpty(value)) {

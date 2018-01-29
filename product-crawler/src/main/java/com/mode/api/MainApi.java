@@ -59,7 +59,7 @@ public class MainApi {
 //    }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public void test() {
+    public String test() {
 //        Order order = orderRepository.getOne(2l);
 //        System.out.println(order.getOrderNo());
 //        System.out.println(order.getOrderStatus());
@@ -79,6 +79,7 @@ public class MainApi {
 //        }
 //        statementService.updatePercentage();
         testService.test();
+        return "test";
     }
 
     @RequestMapping(value = "/process", method = RequestMethod.GET)

@@ -21,10 +21,10 @@ import com.mode.util.ExcelUtils;
  */
 public class MaBangOrderService {
 
-    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/input";
-
-    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/output/order.xls";
-
+    //public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/input";
+	public static String inputPath = "C:/Users/Administrator/order/input";
+    //public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/output/order.xls";
+	public static String outputPath = "C:/Users/Administrator/order/output/order1.xls";
     public void load() throws Exception {
         List<MaBangOrder> maBangOrders = new ArrayList<>();
         input(maBangOrders);

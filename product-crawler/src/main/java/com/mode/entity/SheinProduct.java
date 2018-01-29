@@ -103,7 +103,7 @@ public class SheinProduct {
 
 
     public static void main(String[] args) throws Exception {
-        ObjectMapper om = new ObjectMapper();
+        /*ObjectMapper om = new ObjectMapper();
 //        String s = "{\"goods_id\": 370612, \"goods_sn\": \"sweater170706468\", \"us_in_stock\": 1, \"url_goods_id\": " +
 //                "370612, \"shop_price\": 40, \"special_price\": 16, \"special_price_start\": \"2017-11-16\", " +
 //                "\"special_price_end\": \"2035-12-01\", \"goods_thumb\": \"http://img.ltwebstatic" +
@@ -299,7 +299,7 @@ public class SheinProduct {
         System.out.println(sheinProduct.getShopPrice());
         System.out.println(sheinProduct.getGoodsThumb());
         System.out.println(sheinProduct.getSpecialPrice());
-        System.out.println(sheinProduct.getComment().getCommentNum());
+        System.out.println(sheinProduct.getComment().getCommentNum());*/
     }
 
 }

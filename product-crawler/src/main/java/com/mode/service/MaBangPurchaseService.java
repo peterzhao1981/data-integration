@@ -22,10 +22,10 @@ import com.mode.util.RawDataUtil;
  */
 public class MaBangPurchaseService {
 
-    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/input";
-
-    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/output/purchase.xls";
-
+    //public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/input";
+	public static String inputPath = "D:/excel/purchase/input";
+    //public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/output/purchase.xls";
+	public static String outputPath = "D:/excel/purchase/output/purchase.xls";
 
     private List<String> uploadedPurchases = new ArrayList<>();
 
@@ -204,3 +204,5 @@ public class MaBangPurchaseService {
         service.load();
     }
 }
+
+

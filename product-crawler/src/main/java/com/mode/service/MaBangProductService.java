@@ -21,10 +21,11 @@ import com.mode.util.ExcelUtils;
  */
 public class MaBangProductService {
 
-    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/product/input";
-
-    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/product/output/product.xls";
-
+    //public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/product/input";
+	public static String inputPath = "D:/excel/product/input";
+    //public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/product/output/product.xls";
+	public static String outputPath = "D:/excel/product/output/product.xls";
+	
     public void load() throws Exception {
         List<MaBangProduct> maBangProducts = new ArrayList<>();
 //        input(maBangProducts);

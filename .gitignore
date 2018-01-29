@@ -41,7 +41,7 @@ images
 # Shell script
 .sh
 shellScript
-.json
+*.json
 
 # log files
 log.txt

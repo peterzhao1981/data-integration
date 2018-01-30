@@ -128,6 +128,12 @@ public class MaBangOrderService {
                                             if (value.endsWith("#")) {
                                                 value = value.substring(0, value.length() - 1);
                                             }
+//                                            if (value.startsWith("p10746-")) {
+//                                                value = value.replaceAll("p10746-", "");
+//                                            }
+//                                            if ("p10897-19886-F-Black-RedSnowflake".equals(value)) {
+//                                                value = "p10897-19886-RedSnow";
+//                                            }
                                         }
                                         sku = value;
                                     } else if (j == 7) {
@@ -317,5 +323,4 @@ public class MaBangOrderService {
         MaBangOrderService service = new MaBangOrderService();
         service.load();
     }
-
 }

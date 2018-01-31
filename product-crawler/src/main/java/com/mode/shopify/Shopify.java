@@ -1,6 +1,9 @@
 package com.mode.shopify;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import com.mode.shopify.product.response.ShopifyProductListResponse;
 import com.mode.shopify.product.template.ShopifyProductTemplate;
 import com.mode.shopify.common.ShopifyConstants;
@@ -58,5 +61,20 @@ public class Shopify {
         ShopifyProductListResponse response = Shopify.getInstance(true).shopifyProductTemplate()
                 .getProductsByPage(1, 100);
         System.out.println(response.getProducts().size());
+
+//        String changedTime = "2017-02-23T08:04:02+01:00";
+//        String pattern = "dd-MM-yyyy-'T'HHmmss";
+//        String pattern_ori = "yyyy-MM-dd'T'HH:mm:ssX";
+//        SimpleDateFormat ft = new SimpleDateFormat(pattern);
+//        SimpleDateFormat ft_ori = new SimpleDateFormat(pattern_ori);
+//
+//        String date = null;
+//        try {
+//            date = ft.format(ft_ori.parse(changedTime));
+//            System.out.println(date);
+//        } catch (ParseException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
 }

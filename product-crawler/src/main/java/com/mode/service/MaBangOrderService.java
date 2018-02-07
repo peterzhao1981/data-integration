@@ -22,10 +22,10 @@ import com.mode.util.RawDataUtil;
  */
 public class MaBangOrderService {
 
-    //public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/input";
-	public static String inputPath = "C:/Users/Administrator/order/input";
-    //public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/output/order.xls";
-	public static String outputPath = "C:/Users/Administrator/order/output/order1.xls";
+    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/input";
+//	public static String inputPath = "C:/Users/Administrator/order/input";
+    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/output/order.xls";
+//	public static String outputPath = "C:/Users/Administrator/order/output/order1.xls";
 
 
     private List<String> excludeOrders = new ArrayList<>();

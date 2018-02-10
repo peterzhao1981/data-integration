@@ -20,7 +20,7 @@ import com.mode.util.RawDataUtil;
 /**
  * Created by zhaoweiwei on 2018/1/9.
  */
-public class MaBangOrderService {
+public class DxmToMbOrderService {
 
     public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/order/input";
 //	public static String inputPath = "C:/Users/Administrator/order/input";
@@ -98,71 +98,86 @@ public class MaBangOrderService {
                                     if (value != null) {
                                         value = value.trim();
                                     }
-                                    if (j == 0) {
-                                        if (excludeOrders.contains(value)) {
-                                            System.out.println(value);
-                                            orderNo = "";
-                                            continue;
-                                        }
-                                        orderNo = value;
-                                    } else if (j == 10) {
-                                        if (!StringUtils.isEmpty(value)) {
-                                            listPrice = "USD" + value;
-                                        }
-                                    } else if (j == 18) {
-                                        buyerName = value;
-                                    } else if (j == 29) {
-                                        buyerPhone = value;
-                                    } else if (j == 20) {
-                                        buyerAddress1 = value;
-                                    } else if (j == 21) {
-                                        buyerAddress2 = value;
-                                    } else if (j == 23) {
-                                        buyerCity = value;
-                                    } else if (j == 24) {
-                                        buyerState = value;
-                                    } else if (j == 25) {
-                                        buyerZip = value;
-                                    } else if (j == 26) {
-                                        buyerCountry = StringUtils.isEmpty(value) ? value : value.toUpperCase();
-                                    } else if (j == 46) {
-                                        if (!StringUtils.isEmpty(value)) {
-                                            value = value.replaceAll(" ", "");
-                                            if (value.endsWith("#")) {
-                                                value = value.substring(0, value.length() - 1);
+                                    switch (j) {
+                                        case 0:
+                                            if (excludeOrders.contains(value)) {
+                                                System.out.println(value);
+                                                orderNo = "";
+                                                break;
                                             }
+                                            orderNo = value;
+                                            break;
+                                        case 10:
+                                            if (!StringUtils.isEmpty(value)) {
+                                                listPrice = "USD" + value;
+                                            }
+                                            break;
+                                        case 18:
+                                            buyerName = value;
+                                            break;
+                                        case 29:
+                                            buyerPhone = value;
+                                            break;
+                                        case 20:
+                                            buyerAddress1 = value;
+                                            break;
+                                        case 21:
+                                            buyerAddress2 = value;
+                                            break;
+                                        case 23:
+                                            buyerCity = value;
+                                            break;
+                                        case 24:
+                                            buyerState = value;
+                                            break;
+                                        case 25:
+                                            buyerZip = value;
+                                            break;
+                                        case 26:
+                                            buyerCountry = StringUtils.isEmpty(value) ? value : value.toUpperCase();
+                                            break;
+                                        case 46:
+                                            if (!StringUtils.isEmpty(value)) {
+                                                value = value.replaceAll(" ", "");
+                                                if (value.endsWith("#")) {
+                                                    value = value.substring(0, value.length() - 1);
+                                                }
 //                                            if (value.startsWith("p10746-")) {
 //                                                value = value.replaceAll("p10746-", "");
 //                                            }
 //                                            if ("p10897-19886-F-Black-RedSnowflake".equals(value)) {
 //                                                value = "p10897-19886-RedSnow";
 //                                            }
-                                        }
-                                        sku = value;
-                                    } else if (j == 7) {
-                                        productTitle = value;
-                                    } else if (j == 8) {
-                                        quantity = String.valueOf(Double.valueOf(value).intValue());
-                                    } else if (j == 39) {
-                                        if (!StringUtils.isEmpty(value)) {
-                                            int index = value.indexOf(" ");
-                                            if (index != -1) {
-                                                value = value.substring(0, index);
                                             }
-                                        }
-                                        paidDate = value;
-                                    } else if (j == 34) {
-                                        if (!StringUtils.isEmpty(value)) {
-                                            orderNo = "";
-                                            continue;
-                                        }
-                                    } else if (j == 50) {
-                                        if (!"上海马帮合作仓".equals(value)) {
-                                            orderNo = "";
-                                            continue;
-                                        }
-                                    }
+                                            sku = value;
+                                            break;
+                                        case 7:
+                                            productTitle = value;
+                                            break;
+                                        case 8:
+                                            quantity = String.valueOf(Double.valueOf(value).intValue());
+                                            break;
+                                        case 39:
+                                            if (!StringUtils.isEmpty(value)) {
+                                                int index = value.indexOf(" ");
+                                                if (index != -1) {
+                                                    value = value.substring(0, index);
+                                                }
+                                            }
+                                            paidDate = value;
+                                            break;
+                                        case 34:
+                                            if (!StringUtils.isEmpty(value)) {
+                                                orderNo = "";
+                                            }
+                                            break;
+                                        case 50:
+                                            if (!"上海马帮合作仓".equals(value)) {
+                                                orderNo = "";
+                                            }
+                                            break;
 
+                                    }
                                 }
                             }
                             if (!StringUtils.isEmpty(orderNo)) {
@@ -323,7 +338,7 @@ public class MaBangOrderService {
 
 
     public static void main(String[] args) throws Exception {
-        MaBangOrderService service = new MaBangOrderService();
+        DxmToMbOrderService service = new DxmToMbOrderService();
         service.load();
     }
 }

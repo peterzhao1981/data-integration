@@ -19,7 +19,7 @@ import com.mode.util.ExcelUtils;
 /**
  * Created by zhaoweiwei on 2018/1/7.
  */
-public class MaBangProductService {
+public class DxmToMbProductService {
 
 //    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/product/input";
 	public static String inputPath = "D:/excel/product/input";
@@ -70,33 +70,40 @@ public class MaBangProductService {
                                     if (value != null) {
                                         value = value.trim();
                                     }
-                                    if (j == 0) {
-                                        value = value.replaceAll(" ", "");
-                                        maBangProduct.setSku(value);
-                                        int index = value.indexOf("-");
-                                        if (index > -1) {
-                                            maBangProduct.setPrimarySku(value.substring(0, index));
-                                        } else {
-                                            maBangProduct.setPrimarySku(value);
-                                        }
-                                    } else if (j == 3) {
-                                        maBangProduct.setTitle(value);
-                                    } else if (j == 4) {
-                                        maBangProduct.setImageUrl(value);
-                                    } else if (j == 5) {
-                                        if (StringUtils.isEmpty(value)) {
-                                            maBangProduct.setWeight("5");
-                                        } else {
-                                            maBangProduct.setWeight(value);
-                                        }
-                                    } else if (j == 6) {
-                                        maBangProduct.setCost("0");
-                                    } else if (j == 10) {
-                                        maBangProduct.setPurchaseUrl(value);
-                                    } else if (j == 11) {
-                                        maBangProduct.setComment(value);
+                                    switch (j) {
+                                        case 0:
+                                            value = value.replaceAll(" ", "");
+                                            maBangProduct.setSku(value);
+                                            int index = value.indexOf("-");
+                                            if (index > -1) {
+                                                maBangProduct.setPrimarySku(value.substring(0, index));
+                                            } else {
+                                                maBangProduct.setPrimarySku(value);
+                                            }
+                                            break;
+                                        case 3:
+                                            maBangProduct.setTitle(value);
+                                            break;
+                                        case 4:
+                                            maBangProduct.setImageUrl(value);
+                                            break;
+                                        case 5:
+                                            if (StringUtils.isEmpty(value)) {
+                                                maBangProduct.setWeight("5");
+                                            } else {
+                                                maBangProduct.setWeight(value);
+                                            }
+                                            break;
+                                        case 6:
+                                            maBangProduct.setCost("0");
+                                            break;
+                                        case 10:
+                                            maBangProduct.setPurchaseUrl(value);
+                                            break;
+                                        case 11:
+                                            maBangProduct.setComment(value);
+                                            break;
                                     }
-
                                 }
                             }
                             if (!StringUtils.isEmpty(maBangProduct.getSku())) {
@@ -130,8 +137,6 @@ public class MaBangProductService {
                     int rows = sheet.getPhysicalNumberOfRows();
                     System.out.println(rows);
                     for (int i = 2; i < rows; i++) {
-//                            System.out.println(i);
-
                         Row row = sheet.getRow(i);
                         if (row != null) {
                             int cells = row.getLastCellNum();
@@ -159,25 +164,30 @@ public class MaBangProductService {
                                     if (value != null) {
                                         value = value.trim();
                                     }
-                                    if (j == 0) {
-                                        value = value.replaceAll(" ", "");
-                                        maBangProduct.setSku(value);
-                                        int index = value.indexOf("-");
-                                        if (index > -1) {
-                                            maBangProduct.setPrimarySku(value.substring(0, index));
-                                        } else {
-                                            maBangProduct.setPrimarySku(value);
-                                        }
-                                    } else if (j == 8) {
-                                        maBangProduct.setTitle(value);
-                                    } else if (j == 9) {
-                                        maBangProduct.setImageUrl(value);
-                                    } else if (j == 15) {
-                                        maBangProduct.setPurchaseUrl(value);
-                                    } else if (j == 16) {
-                                        maBangProduct.setComment(value);
+                                    switch (j) {
+                                        case 0:
+                                            value = value.replaceAll(" ", "");
+                                            maBangProduct.setSku(value);
+                                            int index = value.indexOf("-");
+                                            if (index > -1) {
+                                                maBangProduct.setPrimarySku(value.substring(0, index));
+                                            } else {
+                                                maBangProduct.setPrimarySku(value);
+                                            }
+                                            break;
+                                        case 8:
+                                            maBangProduct.setTitle(value);
+                                            break;
+                                        case 9:
+                                            maBangProduct.setImageUrl(value);
+                                            break;
+                                        case 15:
+                                            maBangProduct.setPurchaseUrl(value);
+                                            break;
+                                        case 16:
+                                            maBangProduct.setComment(value);
+                                            break;
                                     }
-
                                 }
                             }
                             if (!StringUtils.isEmpty(maBangProduct.getSku())) {
@@ -329,7 +339,7 @@ public class MaBangProductService {
     }
 
     public static void main(String[] args) throws Exception {
-        MaBangProductService service = new MaBangProductService();
+        DxmToMbProductService service = new DxmToMbProductService();
         service.load();
     }
 }

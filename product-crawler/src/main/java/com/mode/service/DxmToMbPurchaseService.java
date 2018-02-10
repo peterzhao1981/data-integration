@@ -20,12 +20,12 @@ import com.mode.util.RawDataUtil;
 /**
  * Created by zhaoweiwei on 2018/1/8.
  */
-public class MaBangPurchaseService {
+public class DxmToMbPurchaseService {
 
-//    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/input";
-	public static String inputPath = "D:/excel/purchase/input";
-//    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/output/purchase.xls";
-	public static String outputPath = "D:/excel/purchase/output/purchase.xls";
+    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/input";
+//	public static String inputPath = "D:/excel/purchase/input";
+    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/output/purchase.xls";
+//	public static String outputPath = "D:/excel/purchase/output/purchase.xls";
 
     private List<String> uploadedPurchases = new ArrayList<>();
 
@@ -84,37 +84,42 @@ public class MaBangPurchaseService {
                                     if (value != null) {
                                         value = value.trim();
                                     }
-                                    if (j == 0) {
-                                        value = "2018" + value;
-                                        if (uploadedPurchases.contains(value)) {
-                                            System.out.println(value);
-                                            maBangPurchase.setBatchNo("");
-                                            continue;
-                                        }
-                                        maBangPurchase.setBatchNo(value);
-                                    } else if (j == 2) {
-                                        if (!StringUtils.isEmpty(value)) {
-                                            value = value.replaceAll(" ", "");
-                                            if (value.endsWith("#")) {
-                                                value = value.substring(0, value.length() - 1);
+                                    switch (j) {
+                                        case 0:
+                                            value = "2018" + value;
+                                            if (uploadedPurchases.contains(value)) {
+                                                System.out.println(value);
+                                                maBangPurchase.setBatchNo("");
+                                                break;
                                             }
-                                        }
-                                        maBangPurchase.setSku(value);
-                                    } else if (j == 4) {
-                                        maBangPurchase.setQuantity(value);
-                                    } else if (j == 11) {
-                                        if (!"上海马帮合作仓".equals(value)) {
-                                            maBangPurchase.setBatchNo("");
-                                            continue;
-                                        }
-                                    } else if (j == 16) {
-                                        if (StringUtils.isEmpty(value)) {
-                                            maBangPurchase.setBatchNo("");
-                                            continue;
-                                        }
-                                        maBangPurchase.setTrackNo(value);
-                                    }
+                                            maBangPurchase.setBatchNo(value);
+                                            break;
+                                        case 2:
+                                            if (!StringUtils.isEmpty(value)) {
+                                                value = value.replaceAll(" ", "");
+                                                if (value.endsWith("#")) {
+                                                    value = value.substring(0, value.length() - 1);
+                                                }
+                                            }
+                                            maBangPurchase.setSku(value);
+                                            break;
+                                        case 4:
+                                            maBangPurchase.setQuantity(value);
+                                            break;
+                                        case 11:
+                                            if (!"上海马帮合作仓".equals(value)) {
+                                                maBangPurchase.setBatchNo("");
+                                            }
+                                            break;
+                                        case 16:
+                                            if (StringUtils.isEmpty(value)) {
+                                                maBangPurchase.setBatchNo("");
+                                                break;
+                                            }
+                                            maBangPurchase.setTrackNo(value);
+                                            break;
 
+                                    }
                                 }
                             }
                             if (!StringUtils.isEmpty(maBangPurchase.getBatchNo())) {
@@ -200,7 +205,7 @@ public class MaBangPurchaseService {
 
 
     public static void main(String[] args) throws Exception {
-        MaBangPurchaseService service = new MaBangPurchaseService();
+        DxmToMbPurchaseService service = new DxmToMbPurchaseService();
         service.load();
     }
 }

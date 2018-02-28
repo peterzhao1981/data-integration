@@ -104,7 +104,7 @@ public class MbToMbOrderService {
                                                 throw new Exception("Order No is empty");
                                             }
                                             if (excludeOrders.contains(value)) {
-                                                System.out.println("ignore " + value);
+//                                                System.out.println("ignore " + value);
                                                 orderNo = "";
                                                 break;
                                             }
@@ -170,16 +170,21 @@ public class MbToMbOrderService {
                                                 int index = value.indexOf(" ");
                                                 if (index != -1) {
                                                     value = value.substring(0, index);
+                                                    if (Integer.parseInt(value.replaceAll("-", "")) <= 20180130) {
+                                                        orderNo = "";
+                                                        break;
+                                                    }
                                                 }
                                             }
                                             paidDate = value;
                                             break;
                                         case 22:
-                                            // Temp
-//                                            if (!StringUtils.isEmpty(value)) {
-//                                                System.out.println("ignore " + orderNo);
-//                                                orderNo = "";
-//                                            }
+                                            // Temporary remove the check
+                                            if (!StringUtils.isEmpty(value)) {
+                                                System.out.println("ignore contains shippmentNo " + value + " for " +
+                                                        "orderNo " + orderNo);
+                                                orderNo = "";
+                                            }
                                             break;
                                     }
                                 }

@@ -94,6 +94,11 @@ public class DxmOrderLogisticsUpdateService {
                                             dxmOrderLogistics.setOrderNo("");
                                             continue;
                                         }
+                                        // Exclude MaBang ERP orders which start with 411
+//                                        if (value.startsWith("411")) {
+//                                            dxmOrderLogistics.setOrderNo("");
+//                                            continue;
+//                                        }
                                         dxmOrderLogistics.setOrderNo(value);
                                     } else if (j == 15) {
                                         dxmOrderLogistics.setLogisticsMethod(value);

@@ -49,7 +49,7 @@ public class MbToMbProductService {
                     Sheet sheet = workbook.getSheetAt(0);
                     int rows = sheet.getPhysicalNumberOfRows();
                     System.out.println(rows);
-                    for (int i = 2; i < rows; i++) {
+                    for (int i = 1; i < rows; i++) {
                         Row row = sheet.getRow(i);
                         if (row != null) {
                             int cells = row.getLastCellNum();
@@ -91,15 +91,15 @@ public class MbToMbProductService {
                                         case 1:
                                             maBangProduct.setTitle(value);
                                             break;
-                                        case 29:
+                                        case 31:
                                             maBangProduct.setImageUrl(value);
                                             break;
-                                        case 16:
+                                        case 18:
                                             maBangProduct.setPurchaseUrl(value);
                                             break;
-//                                        case 16:
-//                                            maBangProduct.setComment(value);
-//                                            break;
+                                        case 32:
+                                            maBangProduct.setComment(value);
+                                            break;
                                     }
                                 }
                             }

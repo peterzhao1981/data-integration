@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.springframework.util.StringUtils;
 
 import com.mode.entity.MaBangPurchase;
+import com.mode.util.CommonUtils;
 import com.mode.util.ExcelUtils;
 import com.mode.util.RawDataUtil;
 
@@ -109,13 +110,7 @@ public class MbToMbPurchaseService {
                                         maBangPurchase.setTrackNo(value);
                                         break;
                                     case 2:
-                                        if (!StringUtils.isEmpty(value)) {
-                                            value = value.replaceAll(" ", "");
-                                            if (value.endsWith("#")) {
-                                                value = value.substring(0, value.length() - 1);
-                                            }
-                                        }
-                                        maBangPurchase.setSku(value);
+                                        maBangPurchase.setSku(CommonUtils.skuConverter(value));
                                         break;
                                     case 5:
                                         maBangPurchase.setQuantity(value);

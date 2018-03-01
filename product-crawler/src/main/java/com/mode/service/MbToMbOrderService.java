@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.springframework.util.StringUtils;
 
 import com.mode.entity.MaBangOrder;
+import com.mode.util.CommonUtils;
 import com.mode.util.ExcelUtils;
 import com.mode.util.RawDataUtil;
 
@@ -140,19 +141,7 @@ public class MbToMbOrderService {
                                             buyerCountry = StringUtils.isEmpty(value) ? value : value.toUpperCase();
                                             break;
                                         case 15:
-                                            if (!StringUtils.isEmpty(value)) {
-                                                value = value.replaceAll(" ", "");
-                                                if (value.endsWith("#")) {
-                                                    value = value.substring(0, value.length() - 1);
-                                                }
-//                                            if (value.startsWith("p10746-")) {
-//                                                value = value.replaceAll("p10746-", "");
-//                                            }
-//                                            if ("p10897-19886-F-Black-RedSnowflake".equals(value)) {
-//                                                value = "p10897-19886-RedSnow";
-//                                            }
-                                            }
-                                            sku = value;
+                                            sku = CommonUtils.skuConverter(value);;
                                             break;
                                         case 16:
                                             productTitle = value;

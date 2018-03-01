@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.springframework.util.StringUtils;
 
 import com.mode.entity.MaBangProduct;
+import com.mode.util.CommonUtils;
 import com.mode.util.ExcelUtils;
 
 /**
@@ -72,8 +73,7 @@ public class DxmToMbProductService {
                                     }
                                     switch (j) {
                                         case 0:
-                                            value = value.replaceAll(" ", "");
-                                            maBangProduct.setSku(value);
+                                            maBangProduct.setSku(CommonUtils.skuConverter(value));
                                             int index = value.indexOf("-");
                                             if (index > -1) {
                                                 maBangProduct.setPrimarySku(value.substring(0, index));
@@ -166,8 +166,7 @@ public class DxmToMbProductService {
                                     }
                                     switch (j) {
                                         case 0:
-                                            value = value.replaceAll(" ", "");
-                                            maBangProduct.setSku(value);
+                                            maBangProduct.setSku(CommonUtils.skuConverter(value));
                                             int index = value.indexOf("-");
                                             if (index > -1) {
                                                 maBangProduct.setPrimarySku(value.substring(0, index));

@@ -68,7 +68,7 @@ public class MbToMbProductService {
                                         try {
                                             value = String.valueOf(cell.getStringCellValue());
                                         } catch (IllegalStateException e) {
-                                            value = String.valueOf(cell.getNumericCellValue());
+                                                value = String.valueOf(cell.getNumericCellValue());
                                         }
                                     } else {
                                         System.out.println("j -> " + j);

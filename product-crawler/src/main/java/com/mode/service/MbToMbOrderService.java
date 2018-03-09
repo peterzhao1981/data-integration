@@ -31,6 +31,8 @@ public class MbToMbOrderService {
 
     private List<String> excludeOrders = new ArrayList<>();
 
+    private List<String> includeOrders = new ArrayList<>();
+
 
     public void load() throws Exception {
         List<MaBangOrder> maBangOrders = new ArrayList<>();
@@ -46,7 +48,15 @@ public class MbToMbOrderService {
             }
             excludeOrders.add(line);
         });
-        System.out.println(excludeOrders.size());
+        System.out.println("excludeOrders -> " + excludeOrders.size());
+        RawDataUtil.processLine("mabang_include_order.txt", line -> {
+            if (StringUtils.isEmpty(line)) {
+                return;
+            }
+            includeOrders.add(line);
+        });
+        System.out.println("includeOrders -> " + includeOrders.size());
+
     }
 
     private void input(List<MaBangOrder> maBangOrders) throws Exception {
@@ -168,8 +178,10 @@ public class MbToMbOrderService {
                                             paidDate = value;
                                             break;
                                         case 22:
-                                            // Temporary remove the check
                                             if (!StringUtils.isEmpty(value)) {
+                                                if (includeOrders.contains(orderNo)) {
+                                                    break;
+                                                }
                                                 System.out.println("ignore contains shippmentNo " + value + " for " +
                                                         "orderNo " + orderNo);
                                                 orderNo = "";

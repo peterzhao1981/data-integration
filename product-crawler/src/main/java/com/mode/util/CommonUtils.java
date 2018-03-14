@@ -29,7 +29,7 @@ public class CommonUtils {
 
     public static String skuConverter(String sku) {
         if (!org.springframework.util.StringUtils.isEmpty(sku)) {
-            sku = sku.replaceAll(" ", "").replaceAll("&", "").replaceAll("\\+", "");
+            sku = sku.replaceAll(" ", "").replaceAll("&", "").replaceAll("\\+", "").replaceAll("/", "");
             if (sku.endsWith("#")) {
                 sku = sku.substring(0, sku.length() - 1);
             }
@@ -44,6 +44,7 @@ public class CommonUtils {
 //        System.out.println(parseProductName("Hair Claw Clip Straight Long Hair Ponytail Extensions - 2H33#"));
 //        System.out.println(parseProductName("Halloween Eyeball &Tai Chi Print Socks - Pattern-1 / US 6 - US 8.5"));
 
-        System.out.println(skuConverter("23413VF-F-Blu e&Black&+W++hite "));
+        System.out.println(skuConverter("p12411-5528-Laser-iPhone6/6S(4.7)"));
+//        System.out.println("\\");
     }
 }

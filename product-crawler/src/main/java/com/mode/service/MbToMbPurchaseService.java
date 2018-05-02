@@ -24,10 +24,10 @@ import com.mode.util.RawDataUtil;
  */
 public class MbToMbPurchaseService {
 
-  //  public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/input";
-   	public static String inputPath = "D:/excel/purchase/input";
- //   public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/output/purchase.xls";
-	public static String outputPath = "D:/excel/purchase/output/purchase.xls";
+    public static String inputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/input";
+//   	public static String inputPath = "D:/excel/purchase/input";
+    public static String outputPath = "/Users/zhaoweiwei/Documents/peter/马帮/purchase/output/purchase.xls";
+//	public static String outputPath = "D:/excel/purchase/output/purchase.xls";
 
     private List<String> uploadedPurchases = new ArrayList<>();
 
@@ -77,6 +77,7 @@ public class MbToMbPurchaseService {
                             for (int j = 0; j < cells; j++) {
                                 Cell cell = row.getCell(j);
                                 String value = getCellValue(cell);
+//                                System.out.println(value);
                                 if (value != null) {
                                     value = value.trim();
                                 }
@@ -219,6 +220,7 @@ public class MbToMbPurchaseService {
                 MaBangPurchase maBangPurchase = maBangPurchases.get(j);
                 row = sheet.createRow(j + 1);
                 cell0 = row.createCell(0);
+//                cell0.setCellType();
                 cell0.setCellValue(maBangPurchase.getBatchNo());
                 cell1 = row.createCell(1);
                 cell1.setCellValue(maBangPurchase.getVendor());

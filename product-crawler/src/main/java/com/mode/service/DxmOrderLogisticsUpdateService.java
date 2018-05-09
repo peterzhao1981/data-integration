@@ -30,9 +30,9 @@ public class DxmOrderLogisticsUpdateService {
 
     private String trackingUrlPrefix = "https://t.17track.net/en#nums=";
 
-
     private List<String> updatedOrders = new ArrayList<>();
 
+    public int test = 0;
 
     public void load() throws Exception {
         List<DxmOrderLogistics> dxmOrderLogisticses = new ArrayList<DxmOrderLogistics>();
@@ -50,7 +50,6 @@ public class DxmOrderLogisticsUpdateService {
         });
         System.out.println(updatedOrders.size());
     }
-
 
     private void input(List<DxmOrderLogistics> dxmOrderLogisticses) throws Exception {
         File input = new File(inputPath);
@@ -94,18 +93,20 @@ public class DxmOrderLogisticsUpdateService {
                                             dxmOrderLogistics.setOrderNo("");
                                             continue;
                                         }
-                                        // Exclude MaBang ERP orders which start with 411
-//                                        if (value.startsWith("411")) {
-//                                            dxmOrderLogistics.setOrderNo("");
-//                                            continue;
-//                                        }
+                                        // Exclude MaBang ERP orders which start
+                                        // with 411
+                                        // if (value.startsWith("411")) {
+                                        // dxmOrderLogistics.setOrderNo("");
+                                        // continue;
+                                        // }
                                         dxmOrderLogistics.setOrderNo(value);
                                     } else if (j == 15) {
                                         dxmOrderLogistics.setLogisticsMethod(value);
                                     } else if (j == 16) {
                                         dxmOrderLogistics.setTrackingNo(value);
                                         if (!StringUtils.isEmpty(value)) {
-                                            dxmOrderLogistics.setTrackingUrl(trackingUrlPrefix + value);
+                                            dxmOrderLogistics
+                                                    .setTrackingUrl(trackingUrlPrefix + value);
                                         }
                                     }
 
@@ -129,7 +130,8 @@ public class DxmOrderLogisticsUpdateService {
             return;
         }
         File output = new File(outputPath);
-        try (Workbook workBook = ExcelUtils.getWorkbook(output); OutputStream out = new FileOutputStream(output)) {
+        try (Workbook workBook = ExcelUtils.getWorkbook(output);
+                OutputStream out = new FileOutputStream(output)) {
 
             // sheet 对应一个工作页
             Sheet sheet = workBook.getSheetAt(0);
@@ -172,6 +174,10 @@ public class DxmOrderLogisticsUpdateService {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    private void testfun() {
+
     }
 
     public static void main(String[] args) throws Exception {

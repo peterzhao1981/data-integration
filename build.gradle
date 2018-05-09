@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+//配置全局版本依赖
 subprojects {
     apply plugin: 'java'
     apply plugin: 'spring-boot'

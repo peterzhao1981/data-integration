@@ -10,6 +10,7 @@ import com.mode.service.CheckProductStatusService;
 import com.mode.service.DxmProductNameUpdateService;
 import com.mode.service.NewSkuGenService;
 import com.mode.service.ProductCrawlerServiceImpl;
+import com.mode.service.ProductPriceProcess;
 import com.mode.service.PurchaseService;
 import com.mode.service.StatementService;
 import com.mode.service.TempPurchaseCommentGenService;
@@ -47,6 +48,9 @@ public class MainApi {
 
     @Autowired
     private CheckProductStatusService checkProductStatusService;
+
+    @Autowired
+    private ProductPriceProcess productPriceProcess;
 
     // @RequestMapping(value = "/init", method = RequestMethod.POST)
     // public void initProducts() {

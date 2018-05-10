@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mode.repository.CheckProductStatusRepository;
@@ -22,19 +20,22 @@ public class Common {
     public final static String RES_PRODUCT_INVALID = "product invalid";// 商品不存在
     public final static String RES_PRODUCT_LACK = "product lack";// 商品缺货
 
+    public final static String HTML_CHANGED = "html structe changed";// 网页结构变化,或者网页错误
     public final static String UNKONWN_HTML = "unknown html";// 新网页，需要重新分析
+    public final static String HTML_UNKNOWN_REASON = "no reason";// 莫名其妙的原因，导致错误，可能是代码逻辑错误
 
-    Check1688 check1688 = null;
+    private Check1688 check1688 = null;
 
     @Autowired
     private CheckProductStatusRepository checkProductRepository;
 
     public void process(String domainStr, String url, Long id) {
         Document docunment = null;
+        Connection conn = null;
         String result = null;
         try {
             result = Common.RES_CONNECT_TIME_OUT;
-            Connection conn = Jsoup.connect(url)
+            conn = Jsoup.connect(url)
                     .userAgent("Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0")
                     .header("Connection", "close").ignoreContentType(true);
             docunment = conn.get();
@@ -63,9 +64,16 @@ public class Common {
                 } else if (domainStr.contains("myqcloud")) {
 
                 } else {
-                    // To do ,后续需要处理诶
-                    result = UNKONWN_HTML;// 说明是新的供应商，需要加一个爬虫类
-                    System.out.println(UNKONWN_HTML + "这个网页我以前没遇到，需要加一个新类");
+                    // TODO ,异常代码，后续需要处理诶
+                    if (conn.response().statusCode() == 0) {
+                        result = RES_CONNECT_TIME_OUT;// 连接超时，无法连接该网页
+                    } else if (conn.response().statusCode() == 200) {
+                        result = UNKONWN_HTML;// 说明是新的供应商，需要加一个爬虫类,
+                    } else {
+                        result = HTML_UNKNOWN_REASON;// 莫名其妙的原因，可能是代码逻辑错误
+                    }
+
+                    System.out.println(result + "无法爬取网页诶");
                 }
 
                 checkProductRepository.setCheckProductStatusStatus(result, id);
@@ -73,46 +81,21 @@ public class Common {
             } else {
                 checkProductRepository.setCheckProductStatusStatus(result, id);
             }
-
         }
+
+    }
+
+    public static Document getDocument(String url) throws Exception {
+        Connection conn = Jsoup.connect(url)
+                .userAgent("Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0")
+                .header("Connection", "close").ignoreContentType(true);
+        Document document = conn.get();
+        return document;
+
     }
 
     public static void main(String[] args) {
-        Document docunment = null;
-        String result = null;
-        String[] urlArr = {
-                "https://trade.1688.com/order/offer_snapshot.htm?spm=a360q.8728381.content.95.6oYweh" };
-        for (String url : urlArr) {
-            try {
-                result = "connect time out";
-                Connection conn = Jsoup.connect(url)
-                        .userAgent("Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0")
-                        .header("Connection", "close").ignoreContentType(true);
 
-                docunment = conn.post();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (docunment != null) {
-                    Elements elements = docunment.select("h3");
-                    for (Element element : elements) {
-                        if (element.hasClass("title")) {
-                            System.out.println("error");
-                        }
-                    }
-                    Elements elements2 = docunment.select("b");
-                    for (Element element : elements2) {
-                        if (element.textNodes().get(0).toString().contains("对不起，暂时没有符合您要求的信息")) {
-                            result = Common.RES_PRODUCT_INVALID;
-                        }
-                    }
-                    System.out.println(result);
-                } else {
-                    System.out.println(result);
-                }
-
-            }
-        }
     }
 
 }

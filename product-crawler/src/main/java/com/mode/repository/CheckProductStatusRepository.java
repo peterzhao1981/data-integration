@@ -30,13 +30,22 @@ public interface CheckProductStatusRepository extends JpaRepository<CheckProduct
     List<Integer> findListID2();
 
     // 查询出status不为success的url记录，然后进行爬虫。
-    @Query(value = "select * from check_product_status where product_url is not null and product_url <>'' and status <> 'product exist'", nativeQuery = true)
-    List<CheckProductStatus> findCrawlerResult();
+    @Query(value = "select * from check_product_status where status <> ?1 or status is null", nativeQuery = true)
+    List<CheckProductStatus> findCrawlerResult(String StatusParam);
+
+    // 查询出status不为success的url记录但是1688的网页，然后进行爬虫。
+    @Query(value = "select * from check_product_status where product_url like '%1688.com%'  and (status not in (?1,?2,?3)  or status is null or status='')", nativeQuery = true)
+    List<CheckProductStatus> findCrawler1688Result(String exist, String invalid, String errorURL);
+
+    // 查询出status不为success的url记录但不是是1688的网页，然后进行爬虫。
+    @Query(value = "select * from check_product_status where (product_url not like '%1688.com%'  or product_url is null)  and (status not in (?1,?2,?3) or status is null or status='') ", nativeQuery = true)
+    List<CheckProductStatus> findCrawlerNot1688Result(String StatusParam, String productLack,
+            String errorURL);
 
     // 将爬取到的，状态信息update到和数据库中。？1是占位符
     @Modifying
     @Transactional
-    @Query("update check_product_status u set u.status=?1 where u.id=?2")
-    int setCheckProductStatusStatus(String status, Long id);
+    @Query(value = "update check_product_status u set u.status=?1 where u.id=?2", nativeQuery = true)
+    int updateStatus(String status, Long id);
 
 }

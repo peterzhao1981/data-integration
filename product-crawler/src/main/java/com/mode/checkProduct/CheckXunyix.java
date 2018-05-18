@@ -1,9 +1,5 @@
 package com.mode.checkProduct;
 
-import java.io.IOException;
-
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -27,37 +23,41 @@ public class CheckXunyix extends AbstractCrawler {
 
     @Override
     public boolean isError404() {
-        return checkByTagName("h1", "您访问的页面地址有误");// 注意这个是contains方式
+        if (checkByTagName("h1", "您访问的页面地址有误")) {
+            result = Common.RES_PRODUCT_INVALID;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean isMainPage() {
-        // TODO 待修改
-        boolean flag = false;
         Elements elements = document.getElementsByClass("j-banner-nav-box-title");
         for (Element element : elements) {
-            String ownText = element.ownText();
-            if (ownText.contains("百货") || ownText.contains("百货")) {
-                flag = true;
-                result = Common.RES_PRODUCT_INVALID;
-                break;
+            for (Element element1 : element.getElementsByTag("a")) {
+                String ownText = element1.ownText();
+                if (ownText.contains("百货") || ownText.contains("平台货源") || ownText.contains("美妆")) {
+                    result = Common.RES_PRODUCT_INVALID;
+                    return true;
+                }
             }
+
         }
-        return flag;
+        return false;
     }
 
     public static void main(String[] args) {
-        String url = "http://www.xunyix.com/goods/3487752.html";
-        Document document = null;
-        Connection connection = Jsoup.connect(url);
-        try {
-            document = connection.get();
-            CheckXunyix ss = new CheckXunyix(null, document, null);
-            System.err.println(ss.isMainPage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("aa" + connection.response().statusCode());// 0
-        }
+
+    }
+
+    @Override
+    protected boolean isForbidden() {
+        return false;
+    }
+
+    @Override
+    protected void dealForbidden() {
+
     }
 }

@@ -3,25 +3,19 @@ package com.mode.checkProduct;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-/*
- * @author maxiaodong on 2018/05/10
- * @version 0.0.1 检查CheckTmll
- */
-public class CheckTmll extends AbstractCrawler {
+public class CheckBao69 extends AbstractCrawler {
 
-    public CheckTmll(String domainStr, Document document, String result) {
+    public CheckBao69(String domainStr, Document document, String result) {
         super(domainStr, document, result);
-    }
-
-    public String process() {
-        return super.process();
+        // TODO Auto-generated constructor stub
     }
 
     @Override
     public boolean isOutOfStack() {
-        // TODO 需要处理由JS生成的动态数据，后面需要处理
+        // TODO Auto-generated method stub
         try {
-            Elements elements = document.getElementsByClass("tb-btn-buy tb-btn-sku");
+            Elements elements = document
+                    .getElementsByClass("btn btn-import btn-huge action-buynow");
             if (elements.get(0).text().contains("立即购买")) {
                 return false;
             }
@@ -33,26 +27,20 @@ public class CheckTmll extends AbstractCrawler {
 
     @Override
     public boolean isError404() {
-        if (checkByTagName("title", "出错啦")) {
+        if (document == null) {
             result = Common.RES_PRODUCT_INVALID;
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
     public boolean isMainPage() {
-        if (checkByTagName("title", "天猫tmall.com--理想生活上天猫")) {
+        if (checkByTagName("title", "包69商城")) {
             result = Common.RES_PRODUCT_INVALID;
             return true;
-        } else {
-            return false;
         }
-    }
-
-    public static void main(String[] args) {
-
+        return false;
     }
 
     @Override

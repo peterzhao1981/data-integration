@@ -18,13 +18,23 @@ public class CheckDearLover extends AbstractCrawler {
 
     @Override
     public boolean isError404() {
-        return checkByTagName("title", "Error 404");
+        if (checkByTagName("title", "Error 404")) {
+            result = Common.RES_PRODUCT_INVALID;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean isMainPage() {
-        return checkByTagName("title",
-                "Wholesale Women's Clothing Online, Cheap Women's Clothes Sale");
+        if (checkByTagName("title",
+                "Wholesale Women's Clothing Online, Cheap Women's Clothes Sale")) {
+            result = Common.RES_PRODUCT_INVALID;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -35,6 +45,18 @@ public class CheckDearLover extends AbstractCrawler {
     }
 
     public static void main(String[] args) {
+
+    }
+
+    @Override
+    protected boolean isForbidden() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    protected void dealForbidden() {
+        // TODO Auto-generated method stub
 
     }
 

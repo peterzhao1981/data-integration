@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.transaction.Transactional;
 
@@ -17,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mode.checkProduct.Common;
+import com.mode.checkProduct.commoninfo.ConfigInfo;
+import com.mode.checkProduct.threadcontrol.Thread1688Task;
+import com.mode.checkProduct.threadcontrol.ThreadOtherTask;
 import com.mode.entity.CheckProductStatus;
 import com.mode.repository.CheckProductStatusRepository;
 import com.mode.util.ExcelUtils;
@@ -41,12 +42,16 @@ public class CheckProductStatusService {
     private static String urlColumnName = "采购链接";
     private int spuColumnIndex, urlColumnIndex;
 
-    // 主方法入口
+    // 主方法入口,一般开始的时候不需要第1、2步的方法，可以注释掉。每一次开始新的爬虫的时候可以将注释去掉
     public void process() throws Exception {
-        checkProductRepository.deleteAll();
+        System.out.println("开始处理excel");
         excelProcess();
+        deleteRepeatRecord();// 本方法是清库
+        System.out.println("开始爬虫");
         crawlerHtml();
     }
+
+    // 一般开始的时候不需要第1、2步的方法，可以注释掉。每一次开始新的爬虫的时候可以将注释去掉
 
     // 将excel导入数据库中
     private void excelProcess() throws IOException {
@@ -112,29 +117,32 @@ public class CheckProductStatusService {
         checkProductRepository.deleteCheckProductStatus(unionList);
     }
 
+    // 将得到的待爬网页list分段，分为1688和非1688
     private void crawlerHtml() {
-        List<CheckProductStatus> noCrawlerResult = new ArrayList<>();
-        noCrawlerResult = checkProductRepository.findCrawlerResult();
+        // 1688集合
+        List<CheckProductStatus> noCrawlerResult1688 = new ArrayList<>();
+        noCrawlerResult1688 = checkProductRepository.findCrawler1688Result(Common.RES_PRODUCT_EXIST,
+                Common.RES_PRODUCT_INVALID, Common.URL_ERROR);// 商品存在与不存在的都不验证了，省的浪费次数
 
-        for (int i = 0; i < noCrawlerResult.size(); i++) {
-            String url = noCrawlerResult.get(i).getProductUrl().trim();
-            Long id = noCrawlerResult.get(i).getId();
-            url = url.replaceAll("：", ":").replaceAll(" ", "");// 去掉URL中错误的字符
-            String domainStr = getDomainStr(url);// 得到待爬网页的主域名
-            if (domainStr.equals("error url")) {
-                // 将url格式错误的信息，插入到数据库中。
-                checkProductRepository.setCheckProductStatusStatus(domainStr, id);
-            } else {
-                crawlerMain(domainStr, url, id);// 开始爬虫
-            }
-        }
+        // 非1688网址集合
+        List<CheckProductStatus> noCrawlerResultOther = new ArrayList<>();
+        noCrawlerResultOther = checkProductRepository.findCrawlerNot1688Result(
+                Common.RES_PRODUCT_EXIST, Common.URL_ERROR, Common.URL_ERROR);// 本来应该是缺货
+
+        Thread1688Task thread1688Task = new Thread1688Task(noCrawlerResult1688,
+                ConfigInfo.threadNum1688);// 默认线程是10个，可以开个线程池，后续优化
+        ThreadOtherTask threadOtherTask = new ThreadOtherTask(noCrawlerResultOther,
+                ConfigInfo.threadNumOther);// 默认线程是5个，可以开个线程池，后续优化
+        // 启动线程
+        thread1688Task.handleList();
+        threadOtherTask.handleList();
     }
 
     // 输出供应商名单，从数据库中读取供应商。用处不大，只是为了分析有哪些网页需要爬取
     private void printSupplierList() {
 
         List<CheckProductStatus> noCrawlerResult = new ArrayList<>();
-        noCrawlerResult = checkProductRepository.findCrawlerResult();
+        noCrawlerResult = checkProductRepository.findCrawlerResult(Common.RES_PRODUCT_EXIST);
         List<String> agent = new ArrayList<>();
         for (int i = 0; i < noCrawlerResult.size(); i++) {
             String tmp = noCrawlerResult.get(i).getProductUrl();
@@ -148,40 +156,29 @@ public class CheckProductStatusService {
         }
     }
 
-    // 得到product_url的域名，用于判断需要使用哪一种爬虫方法，抓取网页.使用该方法之前需要将url的异常字符去掉
-    private String getDomainStr(String url) {
-        String regexStr = "[^//]*?\\.(com|cn|net|org|biz|info|cc|tv)";
-        Pattern pattern = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(url.trim().replaceAll("：", ":").replaceAll(" ", ""));
-        if (matcher.find()) {
-            return matcher.group();
-        } else {
-            // url有问题，直接跳过爬取，将status设置为"error url"
-            System.out.println("url有问题，请检查url，或者正则表达式代码");
-            return "error url";
-        }
-    }
+    public synchronized void test() {
+        Thread thread1 = new Thread() {
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    Thread thread2 = new Thread() {
+                        public void run() {
+                            for (int j = 0; j < 5; j++) {
+                                System.out.println(Thread.currentThread().getName() + "打印" + j);
+                            }
 
-    /*
-     * @param domainStr:域名，url:完整url，id:是url对应的id
-     * 
-     * @describe 爬取网页的主入口
-     */
-    private void crawlerMain(String domainStr, String url, Long id) {
-        Common common = new Common();
-        common.process(domainStr, url, id);
+                        }
+                    };
+                    thread2.start();
+                }
+            }
+        };
+        thread1.start();
+
     }
 
     public static void main(String[] args) {
-        String string = "http：//us.memebox.com/product/5887?showColorOptions=false"
-                .replaceAll("：", ":").replaceAll(" ", "");
-        System.out.println(string);
-        String regexStr = "[^//]*?\\.(com|cn|net|org|biz|info|cc|tv)";
-        Pattern pattern = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(string);
-        if (matcher.find()) {
-            System.out.println(matcher.group());
-        }
+        CheckProductStatusService aa = new CheckProductStatusService();
+        aa.test();
     }
 
 }

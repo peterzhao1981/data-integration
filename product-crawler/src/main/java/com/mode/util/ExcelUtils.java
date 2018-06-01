@@ -55,16 +55,17 @@ public class ExcelUtils {
     /*
      * 根据名称获取sheet表中的列index,create by maxiaodong on 2018/05/07
      */
-    public static int getColumNumberByName(Sheet sheet, String columnName) {
+    public static int getColumNumberByName(Sheet sheet, String[] columnName) {
         int index = -1;
         Row firstRow = sheet.getRow(0);// 只读表头
         Iterator<Cell> cellIterator = firstRow.cellIterator();
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
-            if (cell.getStringCellValue().equals(columnName)) {
-                return cell.getColumnIndex();
+            for (String name : columnName) {
+                if (name.equals(cell.getStringCellValue()))
+                    return cell.getColumnIndex();
             }
         }
-        return index;
+        return index;// 说明不存在该列，返回-1
     }
 }

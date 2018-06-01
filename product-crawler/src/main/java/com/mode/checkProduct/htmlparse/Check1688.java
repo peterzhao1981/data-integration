@@ -1,4 +1,4 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,6 +16,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.mode.checkProduct.commoninfo.Common;
 
 /*
  * @author maxiaodong on 2018/05/09
@@ -263,7 +265,7 @@ public class Check1688 extends AbstractCrawler {
                     e.attr("value", "z_w_w1981");// 设置用户名
                 }
                 if (e.attr("name").equals("TPL_password")) {
-                    e.attr("value", "T3ciT3ci"); // 设置用户密码
+                    e.attr("value", ""); // 设置用户密码
                 }
                 if (e.attr("name").length() > 0) {// 排除空值表单属性
                     datas.put(e.attr("name"), e.attr("value"));

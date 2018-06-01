@@ -1,8 +1,10 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.mode.checkProduct.commoninfo.Common;
 
 public abstract class AbstractCrawler {
     public String domainStr = null;

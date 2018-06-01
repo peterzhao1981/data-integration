@@ -1,6 +1,8 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import org.jsoup.nodes.Document;
+
+import com.mode.checkProduct.commoninfo.Common;
 
 public class CheckMemebox extends AbstractCrawler {
     private boolean isCNme = false;// 判断是否是http://cn.memebox.com标志，还有一个网页是us开头

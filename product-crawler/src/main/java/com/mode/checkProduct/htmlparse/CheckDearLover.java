@@ -1,6 +1,8 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import org.jsoup.nodes.Document;
+
+import com.mode.checkProduct.commoninfo.Common;
 
 /*
  * @author maxiaodong on 2018/05/10

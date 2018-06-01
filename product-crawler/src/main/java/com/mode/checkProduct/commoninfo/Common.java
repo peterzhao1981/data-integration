@@ -1,9 +1,6 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.commoninfo;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -14,14 +11,13 @@ import javax.annotation.PostConstruct;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.mode.checkProduct.commoninfo.ConfigInfo;
 import com.mode.checkProduct.getinstance.GetInstance;
-import com.mode.ippool.htmlparse.URLFecter;
-import com.mode.ippool.ipfilter.IPUtils;
-import com.mode.ippool.ipmodel.IPMessage;
+import com.mode.checkProduct.htmlparse.Check1688API;
 import com.mode.repository.CheckProductStatusRepository;
 
 /*
@@ -55,11 +51,11 @@ public class Common {
         commonUtil.checkProductRepository = this.checkProductRepository;
     }
 
-    // 重载上一个方法，处理非1688的网页，爬虫方式验证
-    public void process(String url, Long id) {
+    // 处理非1688的网页，爬虫方式验证
+    public void process(String url, String orignUrl) {
         Document document = null;
         Connection conn = null;
-        String result = Common.URL_ERROR;
+        String result = null;
         String domainStr = null;
         Map<String, String> requsetHeader = new HashMap<>();
         requsetHeader = Common.requestHeader();
@@ -72,27 +68,28 @@ public class Common {
                 document = conn.get();
                 domainStr = Common.getDomainStr(url);
                 GetInstance getInstance = new GetInstance(result, document, domainStr);
+                getInstance.returnInstance();
                 result = getInstance.getResult();
             } else {
                 result = Common.URL_ERROR;
             }
+            commonUtil.checkProductRepository.updateStatus(result, orignUrl);
         } catch (Exception e) {
-            System.out.println("错误id：" + id);
-            result = RES_CONNECT_TIME_OUT;// url连接超时，无法打开该网页
-            e.printStackTrace();
-        } finally {
-            System.out.println("finally:" + result + ";" + id);
-            commonUtil.checkProductRepository.updateStatus(result, id);
+            result = Common.URL_ERROR;// url连接超时，无法打开该网页
+            commonUtil.checkProductRepository.updateStatus(result, orignUrl);
+            System.out.println("非1688" + result + orignUrl);
         }
     }
 
     // 重载上一个方法，处理1688商城信息，调用API方式，需要传入int类型
-    public void process(String url, Long id, int flag) {
+    public void process(String url, String orignUrl, int flag) {
         String result = null;
+        String shortSize = "";
         // 进行处理之前首先要验证url格式的正确性，注意验证的必要性，否则会导致线程阻塞
         if (isURL(url)) {
             Check1688API check1688 = new Check1688API(url);
-            result = check1688.process();
+            result = check1688.process()[0];// url的status
+            shortSize = check1688.process()[1];// 缺货信息
             // TODO 可能有问题
             // 如果为达到了API调用的上限，则需要切换key与secret的值
             if (result.equals(Common.API_MAX) && ConfigInfo.appIndex < ConfigInfo.appArrLen) {
@@ -102,9 +99,11 @@ public class Common {
             }
         } else {
             result = Common.URL_ERROR;
+            shortSize = "";
         }
-        commonUtil.checkProductRepository.updateStatus(result, id);
-        System.out.println(result + ";" + id);
+        commonUtil.checkProductRepository.updateStatus(result, orignUrl);
+        commonUtil.checkProductRepository.updateLackInfo(shortSize, orignUrl);
+        System.out.println(result + "," + shortSize + ";" + orignUrl);
     }
 
     // 返回请求头，使用随机方式生成请求头，防止反爬虫
@@ -140,30 +139,6 @@ public class Common {
         }
     }
 
-    // 设置爬虫暂停随机时间
-    public static int randomSleepTime(int minTime, int maxTime) {
-        Random random = new Random();
-        int time = random.nextInt(maxTime - minTime + 1);
-        return time + minTime;
-    }
-
-    // 判断ip是否可用，如果不可用则继续下一个，如果循环完毕，都不可用，则进行ip地址爬虫
-    public static IPMessage getVaildIP(String lastIP) {
-        // 得到代理
-        List<IPMessage> ipMessageslist = new ArrayList<>();
-        URLFecter.urlParseNN(ipMessageslist, "http://www.xicidaili.com/nn/1");
-
-        for (IPMessage ipMessage2 : ipMessageslist) {
-            if (ipMessage2.getIPAddress() == lastIP) {
-                continue;
-            }
-            if (IPUtils.IPIsable(ipMessage2)) {
-                return ipMessage2;
-            }
-        }
-        return ipMessageslist.get(0);
-    }
-
     // 得到product_url的域名，用于判断需要使用哪一种爬虫方法，抓取网页.使用该方法之前需要将url的异常字符去掉
     public static String getDomainStr(String url) {
         String regexStr = "[^//]*?\\.(com|cn|net|org|biz|info|cc|tv)";
@@ -173,26 +148,26 @@ public class Common {
             return matcher.group();
         } else {
             // url有问题，直接跳过爬取，将status设置为"error url"
-            System.out.println("url有问题：" + url);
             return Common.URL_ERROR;
         }
     }
 
     // 得到1688商城的url链接中间的index编号
     public static String getProductID(String productUrl) {
-        String regexStr = "[^//]*?\\.(html?)";
+        String regexStr = "[^/]*?\\.html?";
         String matchResult = null;
         Pattern pattern = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern
-                .matcher(productUrl.replaceAll("：", ":").replaceAll(" ", "").trim());
-        if (Common.isURL(productUrl) && matcher.find()) {
-            matchResult = matcher.group().replace(".html", "").trim();
+        Matcher matcher = pattern.matcher(getRightURL(productUrl));
+        if (!productUrl.contains("trade.1688") && Common.isURL(productUrl) && matcher.find()) {
+            matchResult = matcher.group();
+            matchResult = matchResult.split("\\.")[0];
             regexStr = ".*[\\D]+.*";// 判断包含非数字吗
             matcher = Pattern.compile(regexStr).matcher(matchResult);
             return matcher.matches() || matchResult.length() == 0 ? Common.URL_ERROR : matchResult;
         } else {
-            // url有问题，直接跳过爬取，将status设置为"error url"
-            System.out.println("url有问题，请检查url，没有商品id");
+            // 如果是1688tradde快照页面，需要从快照页面提取index
+            if (productUrl.contains("trade.1688"))
+                return Common.getTrade1688ProductID(productUrl);
             return Common.URL_ERROR;
         }
     }
@@ -215,61 +190,38 @@ public class Common {
         return true;
     }
 
-    // 下面的test方法是测试多线程使用
-    public volatile static int count = 0;
-
-    private synchronized void test(int i) {
-        String url4 = "http://cn.memebox.com/catalog/product/view/id/11953";
-        Connection connection = Jsoup.connect(url4);
-        connection.timeout(3000);
-        try {
-            Document document = connection.get();
-            if (document == null) {
-                System.out.println(document);
-            }
-        } catch (Exception e) {
-            // e.printStackTrace();
-        } finally {
-            count++;
-            System.out.println(
-                    Thread.currentThread().getName() + ";" + i + ";" + "链接超时" + ";count=" + count);
+    /*
+     * 将url中的不规则字符去掉
+     */
+    public static String getRightURL(String url) {
+        if (isURL(url)) {
+            return url.replaceAll("：", ":").replaceAll(" ", "").trim();
+        } else {
+            return "null";
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        Document document = null;
-        Connection connection = Jsoup.connect("http://cn.memebox.com/pony/05-25437");
-
+    /*
+     * 如果是trade1688，则可能是快照页面，或者是无效的1688页面
+     */
+    public static String getTrade1688ProductID(String productUrl) {
         try {
-            document = connection.get();
-            System.out.println(document);
+            Document document = Common.getDocument(productUrl);
+            Elements elements = document.getElementsByClass("button button-large");
+            for (Element element : elements) {
+                if (element != null)
+                    return getProductID(element.attr("href"));// 回调
+            }
+            return Common.URL_ERROR;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(document);
-            System.out.println(connection.response().statusCode());
+            return Common.URL_ERROR;
         }
 
     }
 
-    public static void main1() {
-        String url1 = "https://blog.csdn.net/yongh701/article/details/46894417";
-        String url2 = "http://blog.csdn.net/yongh701/article/details/46894417";
-        String url3 = "=VLOOKUP(A103,'[1]New Product Excel'!$E$2:$AF$130,20,FALSE)";
-        String url4 = "https://www.youtube.com/";
-        System.out.println(isURL(url1) + ";" + isURL(url2) + ";" + isURL(url3) + ";" + isURL(url4));
-        Connection connection = Jsoup.connect(url4);
-        for (int i = 0; i < 100; i++) {
-            Thread thread = new Thread() {
-                public void run() {
-                    for (int j = 0; j < 5; j++) {
-                        Common common = new Common();
-                        common.test(j);
-                    }
-                }
-            };
-            thread.start();
-        }
-
+    public static void main(String[] args) {
+        System.out.println(Common.getProductID(
+                "https://detail.1688.com/offer/554829312140.html?spm=a2615.7691456.0.0.35fe109flEFxDM"));
     }
-
 }

@@ -1,4 +1,4 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import java.io.IOException;
 
@@ -8,6 +8,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.mode.checkProduct.commoninfo.Common;
+
 /*
  * @author maxiaodong on 2018/05/10
  * @version 0.0.1 检查Haoduoyi
@@ -16,7 +18,6 @@ public class CheckHaoduoyi extends AbstractCrawler {
 
     public CheckHaoduoyi(String domainStr, Document document, String result) {
         super(domainStr, document, result);
-        // TODO Auto-generated constructor stub
     }
 
     public String process() {
@@ -25,7 +26,6 @@ public class CheckHaoduoyi extends AbstractCrawler {
 
     @Override
     public boolean isOutOfStack() {
-        // TODO Auto-generated method stub
         if (checkByClassName("btnbuy buy_now", "立即购买")) {
             return false;
         }
@@ -86,13 +86,11 @@ public class CheckHaoduoyi extends AbstractCrawler {
 
     @Override
     protected boolean isForbidden() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     protected void dealForbidden() {
-        // TODO Auto-generated method stub
 
     }
 

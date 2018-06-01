@@ -1,12 +1,18 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import org.jsoup.nodes.Document;
 
-public class CheckKmeila extends AbstractCrawler {
+//此网页无法打开
+public class CheckMyqcloud extends AbstractCrawler {
 
-    public CheckKmeila(String domainStr, Document document, String result) {
+    public CheckMyqcloud(String domainStr, Document document, String result) {
         super(domainStr, document, result);
         // TODO Auto-generated constructor stub
+    }
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -23,17 +29,8 @@ public class CheckKmeila extends AbstractCrawler {
 
     @Override
     public boolean isMainPage() {
-        if (checkByClassName("current", "首页")) {
-            result = Common.RES_PRODUCT_INVALID;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static void main(String[] args) {
         // TODO Auto-generated method stub
-
+        return false;
     }
 
     @Override

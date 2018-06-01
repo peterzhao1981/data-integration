@@ -1,9 +1,11 @@
-package com.mode.checkProduct;
+package com.mode.checkProduct.htmlparse;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import com.mode.checkProduct.commoninfo.Common;
 
 public class CheckTaobao extends AbstractCrawler {
     private boolean isDetailTaobao = true;
@@ -75,11 +77,11 @@ public class CheckTaobao extends AbstractCrawler {
     }
 
     public static void main(String[] args) throws Exception {
-        Connection connection = Jsoup
-                .connect("http://cn.memebox.com/catalog/product/view/id/23627");
+        Connection connection = Jsoup.connect(
+                "https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-16178854914.43.7d214b79Tbu3RE&id=542933388250");
         Document document = null;
         document = connection.get();
-        CheckMemebox checkMemebox = new CheckMemebox("cn.memebox.com", document, null);
+        CheckTaobao checkMemebox = new CheckTaobao("item.taobao.com", document, null);
         String result = checkMemebox.process();
         System.out.println(result);
     }

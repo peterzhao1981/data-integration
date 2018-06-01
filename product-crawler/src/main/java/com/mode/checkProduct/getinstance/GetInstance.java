@@ -2,16 +2,18 @@ package com.mode.checkProduct.getinstance;
 
 import org.jsoup.nodes.Document;
 
-import com.mode.checkProduct.CheckBao69;
-import com.mode.checkProduct.CheckDearLover;
-import com.mode.checkProduct.CheckHaoduoyi;
-import com.mode.checkProduct.CheckKmeila;
-import com.mode.checkProduct.CheckMemebox;
-import com.mode.checkProduct.CheckMyqcloud;
-import com.mode.checkProduct.CheckTaobao;
-import com.mode.checkProduct.CheckTmll;
-import com.mode.checkProduct.CheckXunyix;
-import com.mode.checkProduct.Common;
+import com.mode.checkProduct.commoninfo.Common;
+import com.mode.checkProduct.htmlparse.CheckAmazon;
+import com.mode.checkProduct.htmlparse.CheckBao69;
+import com.mode.checkProduct.htmlparse.CheckDearLover;
+import com.mode.checkProduct.htmlparse.CheckHaoduoyi;
+import com.mode.checkProduct.htmlparse.CheckKmeila;
+import com.mode.checkProduct.htmlparse.CheckMemebox;
+import com.mode.checkProduct.htmlparse.CheckMyqcloud;
+import com.mode.checkProduct.htmlparse.CheckShein;
+import com.mode.checkProduct.htmlparse.CheckTaobao;
+import com.mode.checkProduct.htmlparse.CheckTmll;
+import com.mode.checkProduct.htmlparse.CheckXunyix;
 
 public class GetInstance {
     private String result = null;
@@ -27,6 +29,8 @@ public class GetInstance {
     private CheckTmll checkTmll = null;
     private CheckTaobao checkTaobao = null;
     private CheckMyqcloud checkMyqcloud = null;
+    private CheckAmazon checkAmazon = null;
+    private CheckShein checkShein = null;
 
     public GetInstance(String result, Document document, String domainStr) {
         this.result = result;
@@ -62,6 +66,12 @@ public class GetInstance {
         } else if (domainStr.contains("bao69")) {
             checkBao69 = new CheckBao69(domainStr, document, result);
             result = checkBao69.process();
+        } else if (domainStr.contains("amazon")) {
+            checkAmazon = new CheckAmazon(domainStr, document, result);
+            result = checkAmazon.process();
+        } else if (domainStr.contains("shein")) {
+            checkShein = new CheckShein(domainStr, document, result);
+            result = checkShein.process();
         } else {
             result = Common.UNKONWN_HTML;// 说明是未知的网页，需要新增代码解析
         }

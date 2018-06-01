@@ -24,18 +24,36 @@ public class CheckProductStatus {
     @Column(length = 100)
     private String spu;
 
+    @Column(length = 100)
+    private String sku;
+
     @Column(length = 1000)
     private String productUrl;
 
     @Column(length = 200)
     private String status;
 
-    public Long getId() {
-        return id;
+    @Column(length = 1000)
+    private String lackInfo;
+
+    // 产品编号，有可能需要，非自增
+    @Column(columnDefinition = "bigint(13)")
+    private Long productId;
+
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getLackInfo() {
+        return lackInfo;
+    }
+
+    public void setLackInfo(String lackInfo) {
+        this.lackInfo = lackInfo;
     }
 
     public String getSpu() {
@@ -60,6 +78,14 @@ public class CheckProductStatus {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
 }

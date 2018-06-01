@@ -120,6 +120,10 @@ project(':product-crawler') {
 
         // MySQL Java Driver
         runtime("mysql:mysql-connector-java")
+        //配置对jsp的支持
+        runtime("org.apache.tomcat.embed:tomcat-embed-jasper")
+        //配置对html的支持
+        runtime("org.springframework.boot:spring-boot-starter-thymeleaf")
         
         compile fileTree(dir:'libs',include:['commons-logging-1.1.1.jar'])
         compile fileTree(dir:'libs',include:['ocean.client.java.biz.jar'])

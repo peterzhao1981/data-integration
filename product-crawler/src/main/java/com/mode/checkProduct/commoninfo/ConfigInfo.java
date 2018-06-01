@@ -5,7 +5,7 @@ public class ConfigInfo {
     // 爬取1688的线程数目
     public final static int threadNum1688 = 10;
     // 爬取其他网页的线程数目
-    public final static int threadNumOther = 5;
+    public final static int threadNumOther = 15;
 
     public final static String WebSite = "1688";
     // 1688的 key
@@ -13,9 +13,13 @@ public class ConfigInfo {
     public volatile static String appSecret = "ACkqjEgFH3RF";
     public static int appIndex = 0;
 
+    // 请在此处配置excel输出位置
+    public final static String outPutExcel = "C:\\Users\\Administrator\\excel\\checkProductStatus";
+
     // 存放1688的key与password
-    public final static String[] appKeyArr = { "9482224", "1518994" };
-    public final static String[] appSecretArr = { "ACkqjEgFH3RF", "1Xuk9PJS1RHF" };
+    public final static String[] appKeyArr = { "8324148", "8037007", "9482224", "1518994" };
+    public final static String[] appSecretArr = { "62rR1Jps2Ego", "lEWaInEqvizJ", "ACkqjEgFH3RF",
+            "1Xuk9PJS1RHF" };
     public final static int appArrLen = appKeyArr.length;
     // 请求头信息，以数组方式存储
     public final static String[] arrAgent = {

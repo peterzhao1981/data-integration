@@ -13,6 +13,7 @@ import com.mode.checkProduct.htmlparse.CheckMyqcloud;
 import com.mode.checkProduct.htmlparse.CheckShein;
 import com.mode.checkProduct.htmlparse.CheckTaobao;
 import com.mode.checkProduct.htmlparse.CheckTmll;
+import com.mode.checkProduct.htmlparse.CheckWhatsMode;
 import com.mode.checkProduct.htmlparse.CheckXunyix;
 
 public class GetInstance {
@@ -31,6 +32,7 @@ public class GetInstance {
     private CheckMyqcloud checkMyqcloud = null;
     private CheckAmazon checkAmazon = null;
     private CheckShein checkShein = null;
+    private CheckWhatsMode checkWhatsMode = null;
 
     public GetInstance(String result, Document document, String domainStr) {
         this.result = result;
@@ -72,6 +74,9 @@ public class GetInstance {
         } else if (domainStr.contains("shein")) {
             checkShein = new CheckShein(domainStr, document, result);
             result = checkShein.process();
+        } else if (domainStr.contains("whatsmode")) {
+            checkWhatsMode = new CheckWhatsMode(domainStr, document, result);
+            result = checkWhatsMode.process();
         } else {
             result = Common.UNKONWN_HTML;// 说明是未知的网页，需要新增代码解析
         }

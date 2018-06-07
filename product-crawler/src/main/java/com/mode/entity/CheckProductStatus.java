@@ -14,7 +14,8 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "check_product_status", indexes = { @Index(columnList = "id") })
+@Table(name = "check_product_status", indexes = { @Index(columnList = "productUrl"),
+        @Index(columnList = "id") })
 public class CheckProductStatus {
     @Id
     @Column(columnDefinition = "bigint(13)")
@@ -27,13 +28,13 @@ public class CheckProductStatus {
     @Column(length = 100)
     private String sku;
 
-    @Column(length = 1000)
+    @Column(length = 500)
     private String productUrl;
 
     @Column(length = 200)
     private String status;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String lackInfo;
 
     // 产品编号，有可能需要，非自增

@@ -198,10 +198,17 @@ public class CheckProductStatusService {
     }
 
     // 导出结果到excel中
-    public void exportDBtoExcel() {
+    public void exportDBtoExcel(int resultKind) {
         try {
             System.out.println("开始导出结果到excel中");
-            ExcelWrite.process(checkProductRepository.getResult(Common.RES_PRODUCT_EXIST));
+            if (resultKind == 1) {
+                ExcelWrite.process(checkProductRepository.getResult(Common.RES_PRODUCT_EXIST));
+            } else if (resultKind == 2) {
+                ExcelWrite.process(
+                        checkProductRepository.getResultContainLackInfo(Common.RES_PRODUCT_EXIST));
+            } else {
+                System.out.println("请定义要导出的excel类型");
+            }
             System.out.println("导出完成");
         } catch (Exception e) {
             // TODO: handle exception

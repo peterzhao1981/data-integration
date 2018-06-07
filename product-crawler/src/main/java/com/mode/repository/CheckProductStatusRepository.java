@@ -2,12 +2,11 @@ package com.mode.repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mode.entity.CheckProductStatus;
 
@@ -47,7 +46,7 @@ public interface CheckProductStatusRepository extends JpaRepository<CheckProduct
     List<CheckProductStatus> findCrawlerNot1688Result(String StatusParam, String productLack,
             String errorURL);
 
-    // 重载上一个方法，查询出status不为success的url记录但不是是1688的网页，然后进行爬虫。
+    // 重载上一个方法，查询出status不为success的url记录但不是1688的网页，然后进行爬虫。
     @Query(value = "select distinct product_url from check_product_status where (product_url not like '%1688.com%'  or product_url is null )  and (status not in (?1,?2,?3) or status is null or status='') ", nativeQuery = true)
     List<String> findCrawlerNot1688Result_1(String StatusParam, String productLack,
             String productInvalid);
@@ -58,15 +57,19 @@ public interface CheckProductStatusRepository extends JpaRepository<CheckProduct
     @Query(value = "update check_product_status u set u.status=?1 where u.id=?2", nativeQuery = true)
     int updateStatus(String status, Long id);
 
-    // 将爬取到的，状态信息update到和数据库中。方法重载，根据url来匹配商品，从而update，status字段，？1是占位符，0524修改
+    // 将爬取到的，状态信息update到和数据库中。方法重载，根据url来匹配商品，从而更新status与缺货信息字段，？1是占位符，0524修改
     @Modifying
     @Transactional
-    @Query(value = "update check_product_status u set u.status=?1 where u.product_url =?2", nativeQuery = true)
-    int updateStatus(String status, String url);
+    @Query(value = "update check_product_status u set u.status=?1,u.lack_info=?2 where u.product_url =?3", nativeQuery = true)
+    int updateInfo(String status, String shortSize, String url);
 
-    // 导出查询结果
-    @Query(value = "select * from check_product_status where (status <> ?1) ", nativeQuery = true)
+    // 导出查询结果，只显示url无效的信息
+    @Query(value = "select * from check_product_status where (status <> ?1) or status is null or status ='' order by status", nativeQuery = true)
     List<CheckProductStatus> getResult(String StatusParam);
+
+    // 导出查询结果,包含链接无效，以及链接有效但是缺货的信息
+    @Query(value = "select * from check_product_status where status !=?1 or status is null or status =''  or (status =?1 and (lack_info !=null or lack_info!='')) order by status", nativeQuery = true)
+    List<CheckProductStatus> getResultContainLackInfo(String StatusParam);
 
     // 将断码信息更新到数据库中
     @Modifying

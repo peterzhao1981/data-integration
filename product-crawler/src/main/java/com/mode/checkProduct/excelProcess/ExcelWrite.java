@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -14,6 +15,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.mode.checkProduct.commoninfo.Common;
 import com.mode.checkProduct.commoninfo.ConfigInfo;
 import com.mode.entity.CheckProductStatus;
 import com.mode.util.ExcelUtils;
@@ -29,7 +31,9 @@ public class ExcelWrite {
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
-        filePath = filePath + "\\" + df.format(date) + "商品链接失效列表.xls";
+        Random random = new Random();
+        String randomFileNum = String.valueOf(random.nextInt(1000));
+        filePath = filePath + "\\" + df.format(date) + "日_" + randomFileNum + "商品链接失效列表.xls";
         try {
             ExcelWrite.createExcel(sheetName, filePath);
             outFilePath = new File(filePath);
@@ -48,6 +52,7 @@ public class ExcelWrite {
             Cell cell1;
             Cell cell2;
             Cell cell3;
+            Cell cell4;
             row = sheet.createRow(0);
             cell0 = row.createCell(0);
             cell0.setCellValue("采购链接");
@@ -57,7 +62,8 @@ public class ExcelWrite {
             cell2.setCellValue("spu");
             cell3 = row.createCell(3);
             cell3.setCellValue("状态");
-
+            cell4 = row.createCell(4);
+            cell4.setCellValue("缺货信息");
             for (int i = 0; i < resultList.size(); i++) {
                 row = sheet.createRow(i + 1);
                 cell0 = row.createCell(0);
@@ -67,7 +73,17 @@ public class ExcelWrite {
                 cell2 = row.createCell(2);
                 cell2.setCellValue(resultList.get(i).getSpu());
                 cell3 = row.createCell(3);
-                cell3.setCellValue(resultList.get(i).getStatus());
+                try {
+                    if (resultList.get(i).getStatus().equals(Common.RES_PRODUCT_EXIST)) {
+                        cell3.setCellValue("商品存在");
+                    } else {
+                        cell3.setCellValue("商品链接失效");
+                    }
+                } catch (Exception e) {
+                    cell3.setCellValue("商品链接失效");
+                }
+                cell4 = row.createCell(4);
+                cell4.setCellValue(resultList.get(i).getLackInfo());
             }
             workBook.write(out);
             out.close();

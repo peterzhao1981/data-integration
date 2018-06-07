@@ -73,10 +73,10 @@ public class Common {
             } else {
                 result = Common.URL_ERROR;
             }
-            commonUtil.checkProductRepository.updateStatus(result, orignUrl);
+            commonUtil.checkProductRepository.updateInfo(result, null, orignUrl);
         } catch (Exception e) {
             result = Common.URL_ERROR;// url连接超时，无法打开该网页
-            commonUtil.checkProductRepository.updateStatus(result, orignUrl);
+            commonUtil.checkProductRepository.updateInfo(result, null, orignUrl);
             System.out.println("非1688" + result + orignUrl);
         }
     }
@@ -90,19 +90,21 @@ public class Common {
             Check1688API check1688 = new Check1688API(url);
             result = check1688.process()[0];// url的status
             shortSize = check1688.process()[1];// 缺货信息
-            // TODO 可能有问题
             // 如果为达到了API调用的上限，则需要切换key与secret的值
-            if (result.equals(Common.API_MAX) && ConfigInfo.appIndex < ConfigInfo.appArrLen) {
-                ++ConfigInfo.appIndex;
-                ConfigInfo.appKey = ConfigInfo.appKeyArr[ConfigInfo.appIndex];
-                ConfigInfo.appSecret = ConfigInfo.appSecretArr[ConfigInfo.appIndex];
+            try {
+                if (result != null && result.equals(Common.API_MAX)
+                        && ConfigInfo.appIndex < ConfigInfo.appArrLen - 1) {
+                    ++ConfigInfo.appIndex;
+                    ConfigInfo.appKey = ConfigInfo.appKeyArr[ConfigInfo.appIndex];
+                    ConfigInfo.appSecret = ConfigInfo.appSecretArr[ConfigInfo.appIndex];
+                }
+            } finally {
             }
         } else {
             result = Common.URL_ERROR;
             shortSize = "";
         }
-        commonUtil.checkProductRepository.updateStatus(result, orignUrl);
-        commonUtil.checkProductRepository.updateLackInfo(shortSize, orignUrl);
+        commonUtil.checkProductRepository.updateInfo(result, shortSize, orignUrl);
         System.out.println(result + "," + shortSize + ";" + orignUrl);
     }
 

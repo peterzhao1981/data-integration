@@ -26,8 +26,6 @@ public class Check1688API {
             shortResult = "";
         } else {
             SDKResult<AlibabaAgentProductSimpleGetResult> result = getAlibabaResult();
-            System.out.println(
-                    "resultErrorCode:" + result.getErrorCode() + ",productID:" + productID);
             if (result.getErrorCode() == null) {
                 statusResult = getStatusResult(result);
                 shortResult = getShortInSize(result);
@@ -44,8 +42,8 @@ public class Check1688API {
 
     // 调用1688API
     private SDKResult<AlibabaAgentProductSimpleGetResult> getAlibabaResult() {
-        ApiExecutor apiExecutor = new ApiExecutor("8037007", "lEWaInEqvizJ");// (ConfigInfo.appKey,
-                                                                             // ConfigInfo.appSecret);
+        ApiExecutor apiExecutor = new ApiExecutor(ConfigInfo.appKey, ConfigInfo.appSecret);// (ConfigInfo.appKey,
+        // ConfigInfo.appSecret);
         AlibabaAgentProductSimpleGetParam param = new AlibabaAgentProductSimpleGetParam();
         param.setWebSite(ConfigInfo.WebSite);
         param.setProductID(Long.valueOf(productID));
@@ -62,28 +60,20 @@ public class Check1688API {
     public String getStatusResult(SDKResult<AlibabaAgentProductSimpleGetResult> result) {
         String message = null;
         try {
-            message = result.getErrorCode();
+            message = result.getResult().getErrMsg();
             if (message == null) {
-                message = result.getResult().getErrMsg();
-                if (message == null) {
-                    String stutus = result.getResult().getProductInfo().getStatus();
-                    if (stutus.equals("published")) {
-                        String aaa = getShortInSize(result);
-                        System.out.println(aaa);
-                        return Common.RES_PRODUCT_EXIST;
-                    } else {
-                        return Common.RES_PRODUCT_INVALID;
-                    }
+                String stutus = result.getResult().getProductInfo().getStatus();
+                if (stutus.equals("published")) {
+                    return Common.RES_PRODUCT_EXIST;
                 } else {
                     return Common.RES_PRODUCT_INVALID;
                 }
             } else {
-                // gw.QosAPIFrequencyLimit为API调用超限提示
-                return Common.API_MAX;
+                return Common.RES_PRODUCT_INVALID;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return Common.API_MAX;
+            return null;
         }
     }
 
@@ -111,19 +101,17 @@ public class Check1688API {
                 }
             }
             shortResult = shortResult.replaceFirst(",", "");
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             // TODO: handle exception
-            System.out.println("获取json结果异常");
-            return shortResult;
+            System.out.println("获取json结果异常" + result);
+            return shortResult = null;
         }
         return shortResult;
     }
 
     public static void main(String[] args) {
         Check1688API check1688api = new Check1688API(
-                "https://detail.1688.com/offer/542195921671.html?spm=a2615.7691456.0.0.1c0075daty6DnL");
+                "https://detail.1688.com/offer/540270501646.html");
         String[] aa = check1688api.process();
         System.out.println(aa[1]);
         System.out.println(aa[0]);

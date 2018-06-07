@@ -35,11 +35,11 @@ public class CheckProductMainApi {
         checkProductStatusService.process();
     }
 
-    // 3、导出数据库数据到excel中
-    @RequestMapping(value = "/exportDBtoExcel", method = RequestMethod.GET)
-    public void exportDBtoExcel() {
+    // 3、导出数据库数据到excel中,只导出url无效的excel
+    @RequestMapping(value = "/exportDBtoExcelLessInfo", method = RequestMethod.GET)
+    public void exportDBtoExcelLessInfo() {
         try {
-            checkProductStatusService.exportDBtoExcel();
+            checkProductStatusService.exportDBtoExcel(1);
             System.out.println("导出数据库数据至：" + ConfigInfo.outPutExcel + "：成功");
         } catch (Exception e) {
             // TODO: handle exception
@@ -49,13 +49,25 @@ public class CheckProductMainApi {
 
     }
 
+    // 3、导出数据库数据到excel中,只导出url无效的excel
+    @RequestMapping(value = "/exportDBtoExcelMoreInfo", method = RequestMethod.GET)
+    public void exportDBtoExcelMoreInfo() {
+        try {
+            checkProductStatusService.exportDBtoExcel(2);
+            System.out.println("导出数据库数据至：" + ConfigInfo.outPutExcel + "：成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("导出数据库失败");
+        }
+
+    }
+
     @RequestMapping(value = "/getInfo", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView getInfo(ModelAndView mv, HttpServletRequest request) throws Exception {
-        mv.setViewName("/hello");
+        mv.setViewName("/mainPage");
         mv.addObject("title", "欢迎使用Thymeleaf!");
         return mv;
-        // return new ModelAndView("GetInfo.jsp");
     }
 
     public static void main(String[] args) {

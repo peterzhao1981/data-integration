@@ -36,6 +36,7 @@ public class Thread1688Task extends AbstractThreadControl {
                 url = "null";
             } finally {
                 // common.process(url, entity.getId(), 1688);
+                System.out.println("1688:" + Thread.currentThread().getName());
                 common.process(url, orignUrl, 1688);
             }
         }

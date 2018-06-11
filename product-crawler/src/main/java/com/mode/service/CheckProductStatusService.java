@@ -20,6 +20,7 @@ import com.mode.checkProduct.commoninfo.Common;
 import com.mode.checkProduct.commoninfo.ConfigInfo;
 import com.mode.checkProduct.excelProcess.ExcelWrite;
 import com.mode.checkProduct.threadcontrol.Thread1688Task;
+import com.mode.checkProduct.threadcontrol.ThreadCountTask;
 import com.mode.checkProduct.threadcontrol.ThreadOtherTask;
 import com.mode.entity.CheckProductStatus;
 import com.mode.repository.CheckProductStatusRepository;
@@ -183,13 +184,23 @@ public class CheckProductStatusService {
         noCrawlerResultOther = checkProductRepository.findCrawlerNot1688Result_1(
                 Common.RES_PRODUCT_EXIST, Common.RES_PRODUCT_LACK, Common.RES_PRODUCT_INVALID);
 
+        ConfigInfo.unDealProductNumber = noCrawlerResult1688.size() + noCrawlerResultOther.size();
         Thread1688Task thread1688Task = new Thread1688Task(noCrawlerResult1688,
                 ConfigInfo.threadNum1688);// 默认线程是10个，可以开个线程池，后续优化
         ThreadOtherTask threadOtherTask = new ThreadOtherTask(noCrawlerResultOther,
                 ConfigInfo.threadNumOther);// 默认线程是10个，可以开个线程池，后续优化
         // 启动线程
+        ThreadCountTask threadCountTask = ThreadCountTask.getInstance();
+
+        System.out.println(ConfigInfo.unDealProductNumber);
         thread1688Task.handleList();
         threadOtherTask.handleList();
+        try {
+            threadCountTask.endGateCountAwait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("执行完毕");
     }
 
     // 每一次开始新的爬虫之前，需要清库，或者手动将表删掉。启动程序即可重新建表

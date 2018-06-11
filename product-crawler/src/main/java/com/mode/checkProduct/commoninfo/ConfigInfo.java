@@ -1,13 +1,12 @@
 package com.mode.checkProduct.commoninfo;
 
 public class ConfigInfo {
+    public static int threadNum1688 = 10; // 爬取1688的线程数目
+    public static int threadNumOther = 15; // 爬取其他网页的线程数目
 
-    // 爬取1688的线程数目
-    public final static int threadNum1688 = 10;
-    // 爬取其他网页的线程数目
-    public final static int threadNumOther = 15;
+    public volatile static int unDealProductNumber = 9999;// 保存未爬取处理的商品数目
 
-    public final static String WebSite = "1688";
+    public final static String WebSite = "1688";// 1688API设置参数
     // 1688的 key
     public volatile static String appKey = "9482224";
     public volatile static String appSecret = "ACkqjEgFH3RF";

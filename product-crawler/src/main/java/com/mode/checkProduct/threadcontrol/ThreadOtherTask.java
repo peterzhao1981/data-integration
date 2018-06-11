@@ -39,6 +39,7 @@ public class ThreadOtherTask extends AbstractThreadControl {
             }
         }
         System.out.println(threadName + "处理了" + subList.size() + "条！");
+        threadCountTask.endGateCountDown();
     }
 
     /**

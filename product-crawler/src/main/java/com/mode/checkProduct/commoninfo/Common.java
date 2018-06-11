@@ -64,7 +64,7 @@ public class Common {
             if (isURL(url)) {
                 conn = Jsoup.connect(url);
                 conn.headers(requsetHeader);
-                conn.timeout(3000);
+                conn.timeout(5000);
                 document = conn.get();
                 domainStr = Common.getDomainStr(url);
                 GetInstance getInstance = new GetInstance(result, document, domainStr);

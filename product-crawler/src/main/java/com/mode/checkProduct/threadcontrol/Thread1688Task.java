@@ -35,13 +35,12 @@ public class Thread1688Task extends AbstractThreadControl {
                 e.printStackTrace();
                 url = "null";
             } finally {
-                // common.process(url, entity.getId(), 1688);
                 System.out.println("1688:" + Thread.currentThread().getName());
                 common.process(url, orignUrl, 1688);
             }
         }
         System.out.println(threadName + "处理了" + subList.size() + "条！");
-        Thread.currentThread().interrupt();
+        threadCountTask.endGateCountDown();
     }
 
     /**
@@ -55,8 +54,6 @@ public class Thread1688Task extends AbstractThreadControl {
     @Override
     public synchronized void handleList() {
         int length = dataList.size();
-        // int tl = length % threadNum == 0 ? length / threadNum : (length /
-        // threadNum + 1);
         int tl = length / threadNum;
         for (int i = 0; i < threadNum; i++) {
             String threadName = "1688处理线程" + i;

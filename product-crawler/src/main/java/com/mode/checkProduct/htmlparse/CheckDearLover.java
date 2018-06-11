@@ -46,10 +46,6 @@ public class CheckDearLover extends AbstractCrawler {
         return flag;
     }
 
-    public static void main(String[] args) {
-
-    }
-
     @Override
     protected boolean isForbidden() {
         // TODO Auto-generated method stub
@@ -60,6 +56,16 @@ public class CheckDearLover extends AbstractCrawler {
     protected void dealForbidden() {
         // TODO Auto-generated method stub
 
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        String url = "http://www.dear-lover.com/Khaki-Buttoned-Wrap-Cowl-Neck-Sweater-p24434.html";
+        String domainStr = Common.getDomainStr(url);
+        Document document = Common.getDocument(url);
+        String result = "";
+        CheckDearLover checkDearLover = new CheckDearLover(domainStr, document, result);
+        System.out.println(checkDearLover.process());
     }
 
 }

@@ -19,9 +19,12 @@ import org.springframework.stereotype.Service;
 import com.mode.checkProduct.commoninfo.Common;
 import com.mode.checkProduct.commoninfo.ConfigInfo;
 import com.mode.checkProduct.excelProcess.ExcelWrite;
+import com.mode.checkProduct.fileutils.FileUtils;
 import com.mode.checkProduct.threadcontrol.Thread1688Task;
 import com.mode.checkProduct.threadcontrol.ThreadCountTask;
 import com.mode.checkProduct.threadcontrol.ThreadOtherTask;
+import com.mode.checkProduct.userinfo.CurrentUserService;
+import com.mode.checkProduct.userinfo.User;
 import com.mode.entity.CheckProductStatus;
 import com.mode.repository.CheckProductStatusRepository;
 import com.mode.util.ExcelUtils;
@@ -34,35 +37,46 @@ import com.mode.util.ExcelUtils;
 @Transactional
 @Service
 public class CheckProductStatusService {
+    // private static final Logger logger =
+    // LoggerFactory.getLogger(CheckProductStatusService.class);
+
     // 自动注入dao层
     @Autowired
     private CheckProductStatusRepository checkProductRepository;
 
     private CheckProductStatus checkProductEntity;
 
-    public static String input = "C:\\Users\\Administrator\\excel\\checkProductStatus\\orignExcel";
-    private static String sheetName = "Sheet1";
+    // public static String input =
+    // "C:\\Users\\Administrator\\excel\\checkProductStatus\\orignExcel";
     private static String[] skuColumnName = { "库存SKU", "sku" };
-    private static String[] urlColumnName = { "采购链接", "product_url" };
+    private static String[] urlColumnName = { "采购链接", "product_url", "url" };
     private static String[] product_idColumnName = { "product_id" };
     private int skuColumnIndex, urlColumnIndex, product_idColumnIndex;
     private static String skuKey = "sku";
     private static String urlKey = "product_url";
     private static String productIDKey = "product_id";
 
-    // 第一次使用时需要清库check_status
-    public synchronized void process() throws Exception {
+    // 第一次使用时需要清库,已经在前台控制。点击“导入数据库”即执行清库
+    public String process() throws Exception {
+        String result = "error";
         System.out.println("开始爬虫");
         crawlerHtml();
+        System.out.println("第1次爬虫完成");
+        crawlerHtml();
+        System.out.println("第2次爬虫完成");
+        result = crawlerHtml();// 执行两次
         System.out.println("爬虫结束");
+        return result;
     }
 
-    // 一般开始的时候不需要第1、2步的方法，可以注释掉。每一次开始新的爬虫的时候可以将注释去掉
+    // 在上传excel的时候清理数据库？，在导出之后，清库？
     // 将excel导入数据库中
     public void excelProcess() throws IOException {
-        clearTable();
+        // clearTable();
         File excelPathFile;
         Sheet sheet;
+        String input = ConfigInfo.rootUplaodPath
+                + CurrentUserService.getCurrentUser().getUserName();
         List<String> excelFileLsit = new ArrayList<String>();
 
         excelFileLsit = ExcelUtils.getAllExcelFileName(input);
@@ -81,16 +95,13 @@ public class CheckProductStatusService {
             indexMap.put(urlKey, urlColumnIndex);
             indexMap.put(productIDKey, product_idColumnIndex);
             importExcelToDB(sheet, indexMap);
-
         }
         System.out.println("导入完成");
-        // 导入成功之后，立即删除表中的重复记录,由于需要导出sku，所以删除这个操作。修改日期0523
-        // deleteRepeatRecord();
-        // System.out.println("删除重复记录完成");
+        FileUtils.clearDirectory(input);// 清理文件
     }
 
     public void importExcelToDB(Sheet sheet, Map<String, Integer> indexMap) {
-
+        User user = CurrentUserService.getCurrentUser();
         Iterator<Row> iterator = sheet.iterator();// 行迭代器
         while (iterator.hasNext()) {
             String spu = null;
@@ -99,6 +110,7 @@ public class CheckProductStatusService {
             Long productId = 0L;
             // 之所以这样写，是为了保证线程安全，如果将checkProductEntity设置为static将会导致所有线程共享同一份对象
             checkProductEntity = new CheckProductStatus();
+            checkProductEntity.setUsername(user.getUserName());
             int skuColumnIndex = indexMap.get("sku");
             int urlColumnIndex = indexMap.get("product_url");
             int product_idColumnIndex = indexMap.get("product_id");
@@ -142,47 +154,22 @@ public class CheckProductStatusService {
         }
     }
 
-    // 将excel导入数据库
-    private void importExcelToDB(Sheet sheet, int spuColumnIndex, int urlColumnIndex) {
-
-        Iterator<Row> iterator = sheet.iterator();// 行迭代器
-        while (iterator.hasNext()) {
-            String spu = null;
-            String sku = null;
-            String url = null;
-            Row nextRow = iterator.next();
-            if (nextRow.getRowNum() < 1) {
-                continue;// 如果是第一行就跳过
-            }
-            sku = nextRow.getCell(spuColumnIndex).getStringCellValue().toString().trim();
-            if (sku != null && sku.length() > 0 && !sku.equals("null") && sku.contains("-")) {
-                spu = sku.split("-")[0];// 只取前面的spu码
-            }
-            if (nextRow.getCell(urlColumnIndex) != null) {
-                url = nextRow.getCell(urlColumnIndex).getStringCellValue().trim();
-                if (url.length() == 0 && url.equals("")) {
-                    url = null;
-                }
-            }
-            checkProductEntity = new CheckProductStatus();
-            checkProductEntity.setProductUrl(url);
-            checkProductEntity.setSpu(spu);
-            checkProductEntity.setSku(sku);
-            checkProductRepository.save(checkProductEntity);
-        }
-    }
-
     // 将得到的待爬网页list分段，分为1688和非1688
-    private void crawlerHtml() {
+    private String crawlerHtml() {
+        String userName = CurrentUserService.getCurrentUser().getUserName();
+        List<String> unCrawlerList = new ArrayList<>();
+        unCrawlerList.add(Common.RES_PRODUCT_EXIST);
+        unCrawlerList.add(Common.RES_PRODUCT_INVALID);
+        unCrawlerList.add(Common.RES_PRODUCT_LACK);
+
         // 1688集合
         List<String> noCrawlerResult1688 = new ArrayList<>();
-        noCrawlerResult1688 = checkProductRepository
-                .findCrawler1688Result_1(Common.RES_PRODUCT_EXIST, Common.RES_PRODUCT_INVALID);// 商品存在与不存在的都不验证了，省的浪费次数
+        noCrawlerResult1688 = checkProductRepository.findCrawler1688Result(userName, unCrawlerList);// 商品存在与不存在的都不验证了，省的浪费次数
 
         // 非1688网址集合
         List<String> noCrawlerResultOther = new ArrayList<>();
-        noCrawlerResultOther = checkProductRepository.findCrawlerNot1688Result_1(
-                Common.RES_PRODUCT_EXIST, Common.RES_PRODUCT_LACK, Common.RES_PRODUCT_INVALID);
+        noCrawlerResultOther = checkProductRepository.findCrawlerNot1688Result(userName,
+                unCrawlerList);
 
         ConfigInfo.unDealProductNumber = noCrawlerResult1688.size() + noCrawlerResultOther.size();
         Thread1688Task thread1688Task = new Thread1688Task(noCrawlerResult1688,
@@ -199,45 +186,50 @@ public class CheckProductStatusService {
             threadCountTask.endGateCountAwait();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return "error";
         }
         System.out.println("执行完毕");
-    }
-
-    // 每一次开始新的爬虫之前，需要清库，或者手动将表删掉。启动程序即可重新建表
-    private void clearTable() {
-        checkProductRepository.deleteAll();
+        return "success";
     }
 
     // 导出结果到excel中
-    public void exportDBtoExcel(int resultKind) {
+    public String exportDBtoExcel(int resultKind) {
+        String userName = CurrentUserService.getCurrentUser().getUserName();
+        String downFilePath = null;
         try {
             System.out.println("开始导出结果到excel中");
             if (resultKind == 1) {
-                ExcelWrite.process(checkProductRepository.getResult(Common.RES_PRODUCT_EXIST));
+                downFilePath = ExcelWrite.process(getResult(userName), resultKind);
             } else if (resultKind == 2) {
-                ExcelWrite.process(
-                        checkProductRepository.getResultContainLackInfo(Common.RES_PRODUCT_EXIST));
+                downFilePath = ExcelWrite.process(getResultContainLackInfo(userName), resultKind);
             } else {
                 System.out.println("请定义要导出的excel类型");
             }
             System.out.println("导出完成");
         } catch (Exception e) {
-            // TODO: handle exception
             System.out.println("导出失败");
+            return null;
         }
+        return downFilePath;
 
     }
 
-    // 删除数据库中的重复记录,在从Excel导入数据库完成之后执行。
-    private void deleteRepeatRecord() {
-        List<Integer> unionList = new ArrayList<Integer>();
-        unionList = checkProductRepository.findListID1();
-        unionList.addAll(checkProductRepository.findListID2());
-        checkProductRepository.deleteCheckProductStatus(unionList);
+    // 得到导出的结果
+    public List<CheckProductStatus> getResult(String userName) {
+        return checkProductRepository.getResult(Common.RES_PRODUCT_EXIST, userName);
     }
 
-    public static void main(String[] args) {
+    // 得到导出的结果，包含缺货信息
+    public List<CheckProductStatus> getResultContainLackInfo(String userName) {
+        return checkProductRepository.getResultContainLackInfo(Common.RES_PRODUCT_EXIST, userName);
+    }
 
+    public void deleteUserRecord(String userName) throws Exception {
+        checkProductRepository.deleteByUsername(userName);
+    }
+
+    public List<CheckProductStatus> get1688APIUseCurrency(String userName) {
+        return checkProductRepository.findByStatusAndUsername(Common.API_MAX, userName);
     }
 
 }

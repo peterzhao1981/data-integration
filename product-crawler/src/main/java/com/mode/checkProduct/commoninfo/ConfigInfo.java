@@ -7,19 +7,21 @@ public class ConfigInfo {
     public volatile static int unDealProductNumber = 9999;// 保存未爬取处理的商品数目
 
     public final static String WebSite = "1688";// 1688API设置参数
-    // 1688的 key
-    public volatile static String appKey = "9482224";
-    public volatile static String appSecret = "ACkqjEgFH3RF";
+
     public static int appIndex = 0;
+
+    // 服务器上的文件上传根路径
+    public static String rootUplaodPath = "C:\\upload\\";
 
     // 请在此处配置excel输出位置
     public final static String outPutExcel = "C:\\Users\\Administrator\\excel\\checkProductStatus";
 
-    // 存放1688的key与password
+    // 存放1688的key与password,前两个已上线，每天可调用20W次
     public final static String[] appKeyArr = { "8324148", "8037007", "9482224", "1518994" };
     public final static String[] appSecretArr = { "62rR1Jps2Ego", "lEWaInEqvizJ", "ACkqjEgFH3RF",
             "1Xuk9PJS1RHF" };
     public final static int appArrLen = appKeyArr.length;
+
     // 请求头信息，以数组方式存储
     public final static String[] arrAgent = {
             "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",

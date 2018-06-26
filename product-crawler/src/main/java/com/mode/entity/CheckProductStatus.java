@@ -41,6 +41,18 @@ public class CheckProductStatus {
     @Column(columnDefinition = "bigint(13)")
     private Long productId;
 
+    // 上传时间
+    @Column(length = 50)
+    private String uploadtime;
+
+    // 上传用户
+    @Column(length = 20)
+    private String username;
+
+    public Long getId() {
+        return id;
+    }
+
     public Long getProductId() {
         return productId;
     }
@@ -87,6 +99,22 @@ public class CheckProductStatus {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUploadtime() {
+        return uploadtime;
+    }
+
+    public void setUploadtime(String uploadtime) {
+        this.uploadtime = uploadtime;
     }
 
 }

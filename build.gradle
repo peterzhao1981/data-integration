@@ -116,6 +116,7 @@ project(':product-crawler') {
 
         compile("org.apache.poi:poi:3.14")
         compile("org.apache.poi:poi-ooxml:3.14")
+        compile("commons-io:commons-io:+")
 
 
         // MySQL Java Driver
@@ -125,9 +126,9 @@ project(':product-crawler') {
         //配置对html的支持
         runtime("org.springframework.boot:spring-boot-starter-thymeleaf")
         
-        compile fileTree(dir:'libs',include:['commons-logging-1.1.1.jar'])
+        //compile fileTree(dir:'libs',include:['commons-logging-1.1.1.jar'])
         compile fileTree(dir:'libs',include:['ocean.client.java.biz.jar'])
-        compile fileTree(dir:'libs',include:['ocean.client.java.biz-sources.jar'])
+        //compile fileTree(dir:'libs',include:['ocean.client.java.biz-sources.jar'])
 
     }
 }

@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.mode.common.exception.NotFoundException;
+
 /**
  * Created by zhaoweiwei on 2018/1/17.
  * 
@@ -59,13 +61,25 @@ public class ExcelUtils {
         int index = -1;
         Row firstRow = sheet.getRow(0);// 只读表头
         Iterator<Cell> cellIterator = firstRow.cellIterator();
+        String cellValue = "";
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
+            cellValue = cell.getStringCellValue();
             for (String name : columnName) {
-                if (name.equals(cell.getStringCellValue()))
+                if (cellValue != null && cellValue.toUpperCase().contains(name.toUpperCase()))
                     return cell.getColumnIndex();
             }
         }
         return index;// 说明不存在该列，返回-1
+    }
+
+    public static void main(String[] args) {
+        String aa = "null";
+        try {
+            System.out.println(aa.toUpperCase());
+        } catch (Exception e) {
+            System.out.println("为空");
+            throw new NotFoundException("为空");
+        }
     }
 }

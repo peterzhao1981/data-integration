@@ -1,14 +1,11 @@
 package com.mode.checkProduct.excelProcess;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -38,7 +35,7 @@ public class ExcelToDB {
         excelToDBUtil.checkProductRepository = this.checkProductRepository;
     }
 
-    // 将excel的指定列导入导入数据库
+    // 将excel的指定列导入数据库
     public void importExcelToDB(Sheet sheet, Map<String, Integer> indexMap) {
 
         Iterator<Row> iterator = sheet.iterator();// 行迭代器
@@ -106,91 +103,6 @@ public class ExcelToDB {
     }
 
     public static void main(String[] args) {
-        // test.setTest = new setTest();
-        // test.setTest.setA = 1;
-        // test.setTest.setB = 1;
-        // System.out.println(test.setTest.setA + ";" + test.setTest.setB);
-        // test.setTest = new setTest();
-        // System.out.println(test.setTest.setA + ";" + test.setTest.setB);
-        for (int i = 0; i < 100; i++) {
-            Thread thread = new Thread() {
-                public void run() {
-                    test test = new test();
-                    test.setTest = new setTest();
-                    test.setTest.setA++;
-                    Random random = new Random();
-                    int jj = random.nextInt(2) % 2;
-                    if (jj == 0) {
-                        test.setTest.setB = 2;
-                    }
-                    System.out.println(Thread.currentThread().getName() + ";jj=" + jj + ";A="
-                            + test.setTest.setA + ";B=" + test.setTest.setB + ";"
-                            + test.setTest.hashCode());
-                }
-            };
-            thread.start();
-        }
+
     }
-
-    public static void main1(String[] args)
-            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        // TODO Auto-generated method stub
-        test test = new test();
-        test.setId(100);
-        test.setName("ma");
-        Method[] methods = test.getClass().getMethods();
-        for (Method method : methods) {
-            System.out.println(method.getName());
-            if (method.getName().contains("setId")) {
-                method.invoke(test, 12);
-            }
-            if (method.getName().contains("setName")) {
-                method.invoke(test, "nb");
-            }
-        }
-        Field[] fields = test.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Class<?> class1 = field.getType();
-            if (class1.getName() == "int") {
-                field.set(test, 1);
-            }
-            if (class1.getName().equals("java.lang.String")) {
-                field.set(test, null);
-            }
-            System.out.println(field.getType());
-            System.out.println(field.getName());
-        }
-        List<Field> fields2 = Arrays.asList(test.getClass().getFields());
-        fields2.stream().forEach(obj -> obj.setAccessible(true));
-    }
-
-}
-
-class test {
-    private int id;
-    String name;
-    public setTest setTest;
-    public static int bb;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
-
-class setTest {
-    public int setA = 0;
-    public int setB = 0;
 }

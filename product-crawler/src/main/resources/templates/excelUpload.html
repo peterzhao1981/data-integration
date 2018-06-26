@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html> 
+	<head>
+		<meta http-equiv="content-type" content="charset=utf-8"></meta>
+		<title>Excel上传</title>
+		<script src="/resources/static/js/jquery-3.3.1.min.js"></script>
+		<link rel ="stylesheet" type ="text/css" href="/resources/static/easyui/themes/default/easyui.css"/>
+        <link rel ="stylesheet" type="text/css" href="/resources/static/easyui/themes/icon.css"/>
+        <link rel ="stylesheet" type="text/css" href="/resources/static/easyui/demo/demo.css"/>
+		<!-- 引入上传文件的css -->
+		<link rel="stylesheet" type="text/css" href="/resources/static/webuploader/webuploader.css"/>
+		<script type ="text/javascript" src="/resources/static/easyui/jquery.min.js"></script>
+        <script src="/resources/static/easyui/jquery.easyui.min.js"></script>
+		<!-- 引入上传文件的js -->
+		<script type="text/javascript" src="/resources/static/webuploader/webuploader.nolog.js"></script>
+		<script type="text/javascript" src="/resources/static/js/fileupload.js"></script>
+	</head>
+	<body>
+		<div id="uploader" class="wu-example">
+		  <!-- 用来存放文件 -->
+		  <div id="thelist" class="uploader-list"></div>
+		  <div class="btns">
+		      <div id="multiUpload">选择文件
+		          <input type="button" value="选择"/>
+		      </div>
+		      <div>
+		          <h4>1、注意单个EXCEL文件不能超过20M，仅支持XLS、XLXS格式的EXCEl</h4>
+                  <h4>2、首次点击"开始上传"按钮，将清空已上传文件</h4>
+                  <h4>3、上传的Excel文件首行必须为标题栏：并且标题栏只有唯一两列包含URL(或‘采购链接’)、SKU字样。
+                                                                          否则导入数据库将失败，并且会清空已上传内容，需重新上传Excel文件。</h4>
+                  <h4>4、点击‘清空上传’按钮将会清空所有上传文件。</h4>
+                  <h4>5、点击‘导入数据库’按钮将会清空先前已导入数据库的数据，请上传完所有文件之后再点击该按钮。</h4>
+              </div>
+		      <input type="button" id="startUpload"  value="开始上传" />
+		      <input type="button" id="clearFile"  value="清空上传" />
+		      <input type="button" id="ExcelToDB"  value="导入数据库" />   
+		  </div>
+		</div>
+	</body>
+</html>

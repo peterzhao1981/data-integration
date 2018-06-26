@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,23 +15,24 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.mode.checkProduct.commoninfo.Common;
 import com.mode.checkProduct.commoninfo.ConfigInfo;
+import com.mode.checkProduct.fileutils.DateUtils;
+import com.mode.checkProduct.fileutils.FileUtils;
+import com.mode.checkProduct.userinfo.CurrentUserService;
 import com.mode.entity.CheckProductStatus;
 import com.mode.util.ExcelUtils;
 
 public class ExcelWrite {
 
-    public static void process(List<CheckProductStatus> resultList) {
+    public static String process(List<CheckProductStatus> resultList, int kind) {
         String sheetName = "sheet1";
-        String filePath = ConfigInfo.outPutExcel;
+        String filePath = ConfigInfo.rootUplaodPath
+                + CurrentUserService.getCurrentUser().getUserName() + "\\" + "output";
+        FileUtils.deltAndCreatFile(filePath);
         File outFilePath = new File(filePath);
-        if (!outFilePath.exists()) {
-            outFilePath.mkdirs();
-        }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
-        Random random = new Random();
-        String randomFileNum = String.valueOf(random.nextInt(1000));
-        filePath = filePath + "\\" + df.format(date) + "日_" + randomFileNum + "商品链接失效列表.xls";
+        filePath = filePath + "\\" + df.format(date) + "日_商品链接失效列表" + DateUtils.getCurrentTime()
+                + ".xls";
         try {
             ExcelWrite.createExcel(sheetName, filePath);
             outFilePath = new File(filePath);
@@ -62,8 +61,11 @@ public class ExcelWrite {
             cell2.setCellValue("spu");
             cell3 = row.createCell(3);
             cell3.setCellValue("状态");
-            cell4 = row.createCell(4);
-            cell4.setCellValue("缺货信息");
+            // 只有当kind为2的时候才输出缺货信息
+            if (kind == 2) {
+                cell4 = row.createCell(4);
+                cell4.setCellValue("缺货信息");
+            }
             for (int i = 0; i < resultList.size(); i++) {
                 row = sheet.createRow(i + 1);
                 cell0 = row.createCell(0);
@@ -82,17 +84,19 @@ public class ExcelWrite {
                 } catch (Exception e) {
                     cell3.setCellValue("商品链接失效");
                 }
-                cell4 = row.createCell(4);
-                cell4.setCellValue(resultList.get(i).getLackInfo());
+                if (kind == 2) {
+                    cell4 = row.createCell(4);
+                    cell4.setCellValue(resultList.get(i).getLackInfo());
+                }
             }
             workBook.write(out);
             out.close();
             workBook.close();
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
+            return null;
         }
-
+        return filePath;
     }
 
     // 创建excel
@@ -104,12 +108,6 @@ public class ExcelWrite {
         workbook.write(outputStream);
         outputStream.close();
         workbook.close();
-    }
-
-    public static void main(String[] args) throws Exception {
-        List<CheckProductStatus> yy = new ArrayList<>();
-        process(yy);
-
     }
 
 }
